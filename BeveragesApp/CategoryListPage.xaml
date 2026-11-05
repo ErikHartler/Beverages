@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BeveragesApp.CategoryListPage">
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Arkiv">
+            <MenuFlyoutItem
+            Clicked="OnQuitClicked"
+            Text="Avsluta" />
+        </MenuBarItem>
+        <MenuBarItem Text="Information">
+            <MenuFlyoutItem Text="Drycker"/>
+            <MenuFlyoutItem Text="Kategorier" />
+        </MenuBarItem>
+        <MenuBarItem Text="Visa">
+            <MenuFlyoutItem Text="Uppdatera" />
+            <MenuFlyoutItem Text="Toggle Light/Dark Mode" />
+        </MenuBarItem>
+        <MenuBarItem Text="Hjälp">
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+    <ScrollView>
+        <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+            <Label Text="Dryckeskategorier"
+            SemanticProperties.HeadingLevel="Level1"
+            FontSize="32"
+            HorizontalOptions="Center" />
+            <VerticalStackLayout Spacing="15">
+                <Button Text="Lägg till" Clicked="OnAddCategoryClicked" />
+            </VerticalStackLayout>
+            <CollectionView ItemsSource="{Binding Categories}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" ColumnDefinitions="*,Auto, Auto">
+                            <Label Grid.Column="0"  
+                                       x:Name="CategoryName"
+                                       Text="{Binding Name}"
+                                       FontSize="24"
+                                       VerticalOptions="Center" />
+                            <Button Grid.Column="1" Text="Ändra" Clicked="OnUpdateCategoryClicked" CommandParameter="{Binding .}" />
+                            <Button Grid.Column="2" Text="Ta bort" Clicked="OnDeleteCategoryClicked" CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

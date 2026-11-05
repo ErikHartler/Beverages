@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="BeveragesApp/BeveragesApp.csproj">
+      <Deploy Solution="Release|*" />
+    </Project>
+    <Project Path="BeveragesLib/BeveragesLib.csproj" Id="8be927bc-8938-44f5-a979-b8b50344a1b0" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="BeveragesLibTests/BeveragesLibTests.csproj" Id="31bb5349-1bd3-4d53-8ac5-fd62d3ec25b5" />
+  </Folder>
+</Solution>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BeveragesApp.BeverageItemPage">
+
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Arkiv">
+            <MenuFlyoutItem
+            Clicked="OnQuitClicked"
+            Text="Avsluta" />
+        </MenuBarItem>
+        <MenuBarItem Text="Information">
+            <MenuFlyoutItem Text="Drycker"/>
+            <MenuFlyoutItem Text="Kategorier" />
+        </MenuBarItem>
+        <MenuBarItem Text="Visa">
+            <MenuFlyoutItem Text="Uppdatera" />
+            <MenuFlyoutItem Text="Toggle Light/Dark Mode" />
+        </MenuBarItem>
+        <MenuBarItem Text="Hjälp">
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+    
+    <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+            <Label Text="Dryck"
+            SemanticProperties.HeadingLevel="Level1"
+            FontSize="32"
+            HorizontalOptions="Center" />
+        <Entry x:Name="BeverageIdEntry" Placeholder="Dryckens ID"  IsEnabled="False"  />
+        <Entry x:Name="BeverageNameEntry" Placeholder="Dryckens namn"   />
+     
+
+        <Picker Title="Välj dryckeskategori" x:Name="CategoryPicker"
+            ItemDisplayBinding="{Binding Name}" />
+
+        <Button Text="Ta foto" Clicked="OnCapturePhotoClicked" />
+        <Image x:Name="CapturedPhotoImage" WidthRequest="300" HeightRequest="300" />
+        <Button Grid.Column="2" Text="Uppdatera" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" />
+            <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" />
+        </VerticalStackLayout>
+
+</ContentPage>
