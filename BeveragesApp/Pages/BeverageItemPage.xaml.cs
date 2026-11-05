@@ -1,5 +1,4 @@
-﻿
-using BeveragesLib.Data;
+﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
 
 namespace BeveragesApp;
@@ -8,26 +7,26 @@ public partial class BeverageItemPage : ContentPage
 {
     #region private members
     private readonly DataContext _dataContext;
-    private readonly CancellationToken _cancellationToken = new();
+    private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
 
     private readonly  Beverage _beverage;
     #endregion
     #region constructor
-    public BeverageItemPage(DataContext dataContext, Beverage beverage)
+
+
+    public BeverageItemPage(DataContext dataContext, Beverage beverage, CancellationToken cancellationToken)
     {
         InitializeComponent();
         _dataContext = dataContext;
+        _cancellationToken = cancellationToken;
         _beverage = beverage;
-        _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
-#if ANDROID
-        _contentPageHelper.AddAndroidMenuItem("Drycker", _contentPageHelper.OnShowBeveragesClicked);
-        _contentPageHelper.AddAndroidMenuItem("Kategorier", _contentPageHelper.OnShowCategoriesClicked);
-        _contentPageHelper.AddAndroidMenuItem("Avsluta", _contentPageHelper.OnQuitClicked);
-#endif
+        _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken); 
         BindingContext = this; 
         BeverageIdEntry.Text = beverage.Id.ToString();
         BeverageNameEntry.Text = beverage.Name;
+        BeveragePriceEntry.Text = beverage.Price.ToString();    
+        BeverageDescriptionEntry.Text = beverage.Description;
         if (beverage.PhotoImage is { Length: > 0 } imageBytes)
         {
             CapturedPhotoImage.Source = ImageSource.FromStream(() => new MemoryStream(imageBytes));
@@ -42,7 +41,9 @@ public partial class BeverageItemPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await LoadCategoriesAsync(CancellationToken.None);
+        await LoadCategoriesAsync(_cancellationToken);
+        await LoadCountriesAsync(_cancellationToken);
+        await LoadRemarksAsync(_cancellationToken);
     }
     #endregion
     #region private event handlers
@@ -71,6 +72,49 @@ public partial class BeverageItemPage : ContentPage
         catch (Exception ex)
         {
             await DisplayAlertAsync("Fel", $"Ett fel uppstod vid fotografering: {ex.Message}", "OK");
+        }
+    }
+
+    private async Task LoadRemarksAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _dataContext.Database.EnsureCreatedAsync(cancellationToken);
+            List<Remark> remarks     = await AsyncEnumerable.ToListAsync(
+                _dataContext.Remarks.AsAsyncEnumerable(), cancellationToken);
+
+            RemarkPicker.ItemsSource = remarks;
+            if (remarks.Count > 0)
+            {
+                int? selectedRemarkId = _beverage.ReviewRemark?.Id;
+                RemarkPicker.SelectedItem = remarks.FirstOrDefault(
+                    remark => remark.Id == selectedRemarkId) ?? remarks[0];
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
+        }
+    }
+    private async Task LoadCountriesAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _dataContext.Database.EnsureCreatedAsync(cancellationToken);
+            List<Country> countries = await AsyncEnumerable.ToListAsync(
+                _dataContext.Countries.AsAsyncEnumerable(), cancellationToken);
+
+            CountryPicker.ItemsSource = countries;
+            if (countries.Count > 0)
+            {
+                int? selectedCountryId = _beverage.CountryOfOrigin?.Id;
+                CountryPicker.SelectedItem = countries.FirstOrDefault(
+                    country => country.Id == selectedCountryId) ?? countries[0];
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
     private async Task LoadCategoriesAsync(CancellationToken cancellationToken)
@@ -138,9 +182,12 @@ public partial class BeverageItemPage : ContentPage
                 int id = 0; ;
                 if (!string.IsNullOrEmpty(BeverageIdEntry.Text)) id = int.Parse(BeverageIdEntry.Text.Trim());
                 _beverage.Name = BeverageNameEntry.Text.Trim();
-                BeverageCategory selected = (CategoryPicker.SelectedItem as BeverageCategory)!;
-                BeverageCategory category = new() { Id = selected.Id, Name = selected.Name };
-                _beverage.Category = selected;
+                _beverage.Category = CategoryPicker.SelectedItem as BeverageCategory
+                    ?? throw new InvalidOperationException("Select a beverage category.");
+                _beverage.CountryOfOrigin = CountryPicker.SelectedItem as Country
+                    ?? throw new InvalidOperationException("Select a country of origin.");
+                _beverage.ReviewRemark = RemarkPicker.SelectedItem as Remark
+                    ?? throw new InvalidOperationException("Select a remark.");
                 if (id > 0)
                 {
                     _beverage.Id = id;

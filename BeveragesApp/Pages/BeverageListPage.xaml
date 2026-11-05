@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="BeveragesApp.CategoryListPage">
+             x:Class="BeveragesApp.BeverageListPage">
+
+
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Arkiv">
             <MenuFlyoutItem
@@ -11,6 +13,8 @@
         <MenuBarItem Text="Information">
             <MenuFlyoutItem Text="Drycker"/>
             <MenuFlyoutItem Text="Kategorier" />
+            <MenuFlyoutItem Text="Länder" />
+            <MenuFlyoutItem Text="Graderingar" />
         </MenuBarItem>
         <MenuBarItem Text="Visa">
             <MenuFlyoutItem Text="Uppdatera" />
@@ -19,26 +23,33 @@
         <MenuBarItem Text="Hjälp">
         </MenuBarItem>
     </ContentPage.MenuBarItems>
+
     <ScrollView>
         <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
-            <Label Text="Dryckeskategorier"
+            <Label Text="Drycker"
             SemanticProperties.HeadingLevel="Level1"
             FontSize="32"
             HorizontalOptions="Center" />
             <VerticalStackLayout Spacing="15">
-                <Button Text="Lägg till" Clicked="OnAddCategoryClicked" />
+                <Button Text="Lägg till" Clicked="OnAddBeverageClicked" />
             </VerticalStackLayout>
-            <CollectionView ItemsSource="{Binding Categories}">
+            <CollectionView ItemsSource="{Binding Beverages}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10" ColumnDefinitions="*,Auto, Auto">
+                        <Grid Padding="10" ColumnDefinitions="*,Auto, Auto, Auto">
                             <Label Grid.Column="0"  
-                                       x:Name="CategoryName"
+                                       x:Name="BeverageName"
                                        Text="{Binding Name}"
                                        FontSize="24"
                                        VerticalOptions="Center" />
-                            <Button Grid.Column="1" Text="Ändra" Clicked="OnUpdateCategoryClicked" CommandParameter="{Binding .}" />
-                            <Button Grid.Column="2" Text="Ta bort" Clicked="OnDeleteCategoryClicked" CommandParameter="{Binding .}" />
+                            <Label Grid.Column="1"  
+                                       x:Name="BeverageCategory"
+                                       Text="{Binding Category.Name}"
+                                       FontSize="18"
+                                       VerticalOptions="Center" />
+                            
+                            <Button Grid.Column="2" Text="Ändra" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" />
+                            <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

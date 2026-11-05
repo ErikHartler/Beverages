@@ -26,9 +26,28 @@ public partial class DataContext(DbContextOptions<DataContext> options) : DbCont
                 .ValueGeneratedOnAdd();
         });
 
+        modelBuilder.Entity<Country>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.ToTable("Countries");
+            entity.Property(e => e.Id)
+                .HasColumnName("Id")
+                .ValueGeneratedOnAdd();
+        });
+        modelBuilder.Entity<Remark>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.ToTable("Remarks");
+            entity.Property(e => e.Id)
+                .HasColumnName("Id")
+                .ValueGeneratedOnAdd();
+        });
         base.OnModelCreating(modelBuilder);
 
     }
     public DbSet<BeverageCategory> BeverageCategories { get; set; }
     public DbSet<Beverage> Beverages { get; set; }
+    public DbSet<Country> Countries { get; set; }
+    public DbSet<Remark> Remarks{ get; set; }
+
 }

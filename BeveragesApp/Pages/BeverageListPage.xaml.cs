@@ -1,5 +1,4 @@
-﻿
-using BeveragesLib.Data;
+﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -10,20 +9,17 @@ public partial class BeverageListPage : ContentPage
 {
     #region private members
     private readonly DataContext _dataContext;
-    private readonly CancellationToken _cancellationToken = new();
+    private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
     #endregion
     #region constructor
-    public BeverageListPage(DataContext dataContext)
+    public BeverageListPage(DataContext dataContext, CancellationToken cancellationToken)
     {
         InitializeComponent();
         _dataContext = dataContext;
+        _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
-#if ANDROID
-        _contentPageHelper.AddAndroidMenuItem("Drycker", _contentPageHelper.OnShowBeveragesClicked);
-        _contentPageHelper.AddAndroidMenuItem("Kategorier", _contentPageHelper.OnShowCategoriesClicked);
-        _contentPageHelper.AddAndroidMenuItem("Avsluta", _contentPageHelper.OnQuitClicked);
-#endif
+ 
         Beverages = [];
         BindingContext = this; 
     }
@@ -77,7 +73,19 @@ public partial class BeverageListPage : ContentPage
         try
         {
 
-            BeverageItemPage page = new(_dataContext, new Beverage() { Name = "", Category = new BeverageCategory() { Id = 1, Name = "" } });
+            BeverageItemPage page = new(
+                _dataContext, 
+                new Beverage() 
+                { 
+                    Name = "", 
+                    Price=0,
+                    DateOfPurchase = DateTime.Now,
+                    Description = "",
+                    ReviewRemark =new Remark() {Id=1,Name="" }, 
+                    CountryOfOrigin = new Country() { Id = 1, Name = "" }, 
+                    Category = new BeverageCategory() { Id = 1, Name = "" } 
+                }, 
+                _cancellationToken);
             await Navigation.PushAsync(page);
         }
         catch (Exception ex)
@@ -125,10 +133,13 @@ public partial class BeverageListPage : ContentPage
             }
             try
             {
-                Beverage? beverage = await _dataContext.Beverages.Include(b => b.Category).FirstOrDefaultAsync(
-                        c => c.Id == selectedBeverage.Id, CancellationToken.None
-                    ); // Retrieve the selected category from the database
-                BeverageItemPage page = new(_dataContext, beverage!);
+                Beverage? beverage = await _dataContext.Beverages
+                    .Include(b => b.Category)
+                    .Include(b => b.CountryOfOrigin)
+                    .Include(b => b.ReviewRemark)
+                    .FirstOrDefaultAsync(
+                        b => b.Id == selectedBeverage.Id, CancellationToken.None);
+                BeverageItemPage page = new(_dataContext, beverage!, _cancellationToken);
                 await Navigation.PushAsync(page);
             }
             catch (Exception ex)

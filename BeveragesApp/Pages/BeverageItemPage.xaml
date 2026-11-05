@@ -12,6 +12,8 @@
         <MenuBarItem Text="Information">
             <MenuFlyoutItem Text="Drycker"/>
             <MenuFlyoutItem Text="Kategorier" />
+            <MenuFlyoutItem Text="Länder" />
+            <MenuFlyoutItem Text="Graderingar" />
         </MenuBarItem>
         <MenuBarItem Text="Visa">
             <MenuFlyoutItem Text="Uppdatera" />
@@ -20,21 +22,30 @@
         <MenuBarItem Text="Hjälp">
         </MenuBarItem>
     </ContentPage.MenuBarItems>
-    
-    <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+
+    <VerticalStackLayout Spacing="5" Padding="5,0" VerticalOptions="Center">
             <Label Text="Dryck"
             SemanticProperties.HeadingLevel="Level1"
             FontSize="32"
-            HorizontalOptions="Center" />
+            HorizontalOptions="Center" VerticalTextAlignment="Center"/>
         <Entry x:Name="BeverageIdEntry" Placeholder="Dryckens ID"  IsEnabled="False"  />
         <Entry x:Name="BeverageNameEntry" Placeholder="Dryckens namn"   />
-     
+        <Entry x:Name="BeverageDescriptionEntry" Placeholder="Dryckens beskrivning"   />
+        <Entry x:Name="BeveragePriceEntry" Placeholder="Dryckens pris"   />
+
 
         <Picker Title="Välj dryckeskategori" x:Name="CategoryPicker"
             ItemDisplayBinding="{Binding Name}" />
 
+        <Picker Title="Välj ursprungsland" x:Name="CountryPicker"
+            ItemDisplayBinding="{Binding Name}" />
+
+        <Picker Title="Betygsätt" x:Name="RemarkPicker"
+            ItemDisplayBinding="{Binding Name}" />
+        
         <Button Text="Ta foto" Clicked="OnCapturePhotoClicked" />
-        <Image x:Name="CapturedPhotoImage" WidthRequest="300" HeightRequest="300" />
+        <Image x:Name="CapturedPhotoImage" WidthRequest="300" HeightRequest="150" />
+        
         <Button Grid.Column="2" Text="Uppdatera" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" />
             <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" />
         </VerticalStackLayout>

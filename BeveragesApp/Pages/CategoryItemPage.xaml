@@ -1,17 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="BeveragesApp.MainPage">
+             x:Class="BeveragesApp.CategoryItemPage">
 
     <ContentPage.MenuBarItems>
         <MenuBarItem Text="Arkiv">
             <MenuFlyoutItem
-              Clicked="OnQuitClicked"
-              Text="Avsluta" />
+            Clicked="OnQuitClicked"
+            Text="Avsluta" />
         </MenuBarItem>
         <MenuBarItem Text="Information">
             <MenuFlyoutItem Text="Drycker"/>
             <MenuFlyoutItem Text="Kategorier" />
+            <MenuFlyoutItem Text="Länder" />
+            <MenuFlyoutItem Text="Graderingar" />
         </MenuBarItem>
         <MenuBarItem Text="Visa">
             <MenuFlyoutItem Text="Uppdatera" />
@@ -20,18 +22,18 @@
         <MenuBarItem Text="Hjälp">
         </MenuBarItem>
     </ContentPage.MenuBarItems>
-
-    <ScrollView>
-        <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
-            <Label Text="Svenska kräftor kräva dessa drycker"
+    
+    <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+            <Label Text="Dryckeskategori"
             SemanticProperties.HeadingLevel="Level1"
             FontSize="32"
             HorizontalOptions="Center" />
-            <Button Text="Visa kategorier" Clicked="OnShowCategoriesClicked" />
-            <Button Text="Visa drycker" Clicked="OnShowBeveragesClicked" />
-            <Button Text="Avsluta" Clicked="OnQuitClicked" />
-
+        <Entry x:Name="CategoryIdEntry" Placeholder="Kategorins ID"  IsEnabled="False"  />
+        <Entry x:Name="CategoryNameEntry" Placeholder="Kategorins namn"   />
+ 
+        <Image Source="{Binding SelectedCategory.ImageSource}"  />    
+        <Button Grid.Column="2" Text="Uppdatera" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" />
+            <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" />
         </VerticalStackLayout>
-    </ScrollView>
 
 </ContentPage>

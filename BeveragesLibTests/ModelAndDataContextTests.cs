@@ -43,37 +43,58 @@ public sealed class DataContextTests
         var beverageId = _dataContext.Model
             .FindEntityType(typeof(Beverage))!
             .FindProperty(nameof(Beverage.Id))!;
+        var countryId = _dataContext.Model
+            .FindEntityType(typeof(Country))!
+            .FindProperty(nameof(Country.Id))!;
+        var remarkId = _dataContext.Model
+            .FindEntityType(typeof(Remark))!
+            .FindProperty(nameof(Remark.Id))!;
 
         Assert.AreEqual(ValueGenerated.OnAdd, categoryId.ValueGenerated);
         Assert.AreEqual(ValueGenerated.OnAdd, beverageId.ValueGenerated);
+        Assert.AreEqual(ValueGenerated.OnAdd, countryId.ValueGenerated);
+        Assert.AreEqual(ValueGenerated.OnAdd, remarkId.ValueGenerated);
     }
 
     [TestMethod]
-    public async Task SaveChanges_GeneratesIdsAndPersistsBeverageCategoryAndPhoto()
+    public async Task SaveChanges_GeneratesIdsAndPersistsBeverageRelationshipsAndPhoto()
     {
         var category = new BeverageCategory { Name = "Kaffe" };
-        _dataContext.BeverageCategories.Add(category);
+        var country = new Country { Name = "Sverige" };
+        var remark = new Remark { Name = "Excellent", Order = 5 };
+        _dataContext.AddRange(category, country, remark);
         await _dataContext.SaveChangesAsync(TestContext.CancellationToken);
 
         var beverage = new Beverage
         {
             Name = "Espresso",
             Category = category,
+            CountryOfOrigin = country,
+            ReviewRemark = remark,
+            Price = 3.50m,
+            Description = "Strong coffee",
             PhotoImage = [1, 2, 3]
         };
         _dataContext.Beverages.Add(beverage);
         await _dataContext.SaveChangesAsync(TestContext.CancellationToken);
 
         Assert.IsGreaterThan(0, category.Id);
+        Assert.IsGreaterThan(0, country.Id);
+        Assert.IsGreaterThan(0, remark.Id);
         Assert.IsGreaterThan(0, beverage.Id);
 
         _dataContext.ChangeTracker.Clear();
         var persistedBeverage = await _dataContext.Beverages
             .Include(item => item.Category)
+            .Include(item => item.CountryOfOrigin)
+            .Include(item => item.ReviewRemark)
             .SingleAsync(TestContext.CancellationToken);
 
         Assert.AreEqual("Espresso", persistedBeverage.Name);
         Assert.AreEqual("Kaffe", persistedBeverage.Category.Name);
+        Assert.AreEqual("Sverige", persistedBeverage.CountryOfOrigin.Name);
+        Assert.AreEqual("Excellent", persistedBeverage.ReviewRemark.Name);
+        Assert.AreEqual(5, persistedBeverage.ReviewRemark.Order);
         Assert.IsNotNull(persistedBeverage.PhotoImage);
         Assert.AreSequenceEqual(new byte[] { 1, 2, 3 }, persistedBeverage.PhotoImage!);
     }

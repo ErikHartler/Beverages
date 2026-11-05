@@ -1,5 +1,4 @@
-﻿
-using BeveragesLib.Data;
+﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -10,21 +9,18 @@ public partial class CategoryListPage : ContentPage
 {
     #region private members
     private readonly DataContext _dataContext;
-    private readonly CancellationToken _cancellationToken = new();
+    private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
-
     #endregion
+
     #region constructor
-    public CategoryListPage(DataContext dataContext)
+    public CategoryListPage(DataContext dataContext, CancellationToken cancellationToken)
     {
         InitializeComponent();
         _dataContext = dataContext;
+        _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
-#if ANDROID
-        _contentPageHelper.AddAndroidMenuItem("Drycker", _contentPageHelper.OnShowBeveragesClicked);
-        _contentPageHelper.AddAndroidMenuItem("Kategorier", _contentPageHelper.OnShowCategoriesClicked);
-        _contentPageHelper.AddAndroidMenuItem("Avsluta", _contentPageHelper.OnQuitClicked);
-#endif
+ 
         Categories = [];
         BindingContext = this; 
 
@@ -67,7 +63,7 @@ public partial class CategoryListPage : ContentPage
     {
         try
         {
-            CategoryItemPage page = new(_dataContext, new BeverageCategory() { Name=""});
+            CategoryItemPage page = new(_dataContext, new BeverageCategory() { Name=""}, _cancellationToken);
             await Navigation.PushAsync(page);
         }
         catch (Exception ex)
@@ -75,10 +71,7 @@ public partial class CategoryListPage : ContentPage
             await DisplayAlertAsync("Fel", $"Ett fel uppstod: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
-    private async void OnRefreshClicked(object? sender, EventArgs e)
-    {
-        LoadCategories(CancellationToken.None); // Refresh the list of drinks by reloading them from the database
-    }
+
     private async void OnDeleteCategoryClicked(object? sender, EventArgs e)
     {
         if (sender is Button button && button.CommandParameter is BeverageCategory selectedCategory)
@@ -122,7 +115,7 @@ public partial class CategoryListPage : ContentPage
                 BeverageCategory? beverageCategory = await _dataContext.BeverageCategories.FirstOrDefaultAsync(
                         c => c.Id == selectedCategory.Id, CancellationToken.None
                     ); 
-                CategoryItemPage page = new(_dataContext, beverageCategory! );
+                CategoryItemPage page = new(_dataContext, beverageCategory! , _cancellationToken);
                 await Navigation.PushAsync(page);
             }
             catch (Exception ex)

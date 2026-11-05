@@ -1,5 +1,4 @@
-﻿
-using BeveragesLib.Data;
+﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
 
 namespace BeveragesApp;
@@ -8,22 +7,19 @@ public partial class CategoryItemPage : ContentPage
 {
     #region private members
     private readonly DataContext _dataContext;
-    private readonly CancellationToken _cancellationToken = new();
+    private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
 
     private readonly BeverageCategory _beverageCategory; // Property to hold the selected beverage category  
     #endregion
     #region constructor
-    public CategoryItemPage(DataContext dataContext, BeverageCategory beverageCategory)
+    public CategoryItemPage(DataContext dataContext, BeverageCategory beverageCategory, CancellationToken cancellationToken)
     {
         InitializeComponent();
         _dataContext = dataContext; // Assign the injected DataContext instance to the private field
+        _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
-#if ANDROID
-        _contentPageHelper.AddAndroidMenuItem("Drycker", _contentPageHelper.OnShowBeveragesClicked);
-        _contentPageHelper.AddAndroidMenuItem("Kategorier", _contentPageHelper.OnShowCategoriesClicked);
-        _contentPageHelper.AddAndroidMenuItem("Avsluta", _contentPageHelper.OnQuitClicked);
-#endif
+ 
         _beverageCategory = beverageCategory;
         BindingContext = this; //MVVM pattern: The BindingContext is set to the BeverageListPage instance itself, allowing data binding between the UI and the code-behind.
         CategoryNameEntry.Text = beverageCategory.Name;

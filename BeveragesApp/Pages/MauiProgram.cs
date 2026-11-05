@@ -1,10 +1,9 @@
-﻿
-using BeveragesLib.Data;
+﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace BeveragesApp;
+namespace BeveragesApp.Pages;
 
 public static class MauiProgram
 {
@@ -33,11 +32,25 @@ public static class MauiProgram
         {
             DataContext dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
             dbContext.Database.EnsureCreated(); // Ensure the database is created when the application starts
-
+            bool anyMissing = false;
             if (!dbContext.BeverageCategories.Any())
             {
                 // Add initial data if the database is empty
                 dbContext.BeverageCategories.AddRange(BeverageCategory.Seed());
+                anyMissing = true;
+            }
+            if (!dbContext.Countries.Any())
+            {
+                dbContext.Countries.AddRange(Country.Seed());
+                anyMissing = true;
+            }
+            if (!dbContext.Remarks.Any())
+            {
+                dbContext.Remarks.AddRange(Remark.Seed());
+                anyMissing = true;
+            }
+            if (anyMissing)
+            {
                 dbContext.SaveChanges();
             }
         }

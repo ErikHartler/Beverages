@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Runtime;
+using BeveragesApp.Pages;
 
 namespace BeveragesApp.Platforms.Android;
 

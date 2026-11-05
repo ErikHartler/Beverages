@@ -85,34 +85,58 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="CategoryItemPage.xaml.cs">
+	  <Compile Update="Pages\RemarkItemPage.xaml.cs">
+	    <DependentUpon>RemarkItemPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\RemarkListPage.xaml.cs">
+	    <DependentUpon>RemarkListPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\CountryItemPage.xaml.cs">
+	    <DependentUpon>CountryItemPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\CategoryItemPage.xaml.cs">
 	    <DependentUpon>CategoryItemPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="BeverageItemPage.xaml.cs">
+	  <Compile Update="Pages\BeverageItemPage.xaml.cs">
 	    <DependentUpon>BeverageItemPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="BeverageListPage.xaml.cs">
+	  <Compile Update="Pages\BeverageListPage.xaml.cs">
 	    <DependentUpon>BeverageListPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="CategoryListPage.xaml.cs">
+	  <Compile Update="Pages\CountryListPage.xaml.cs">
+	    <DependentUpon>CountryListPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\CategoryListPage.xaml.cs">
 	    <DependentUpon>CategoryListPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="MainPage.xaml.cs">
+	  <Compile Update="Pages\MainPage.xaml.cs">
 	    <DependentUpon>MainPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="CategoryItemPage.xaml">
+	  <MauiXaml Update="Pages\RemarkItemPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="BeverageItemPage.xaml">
+	  <MauiXaml Update="Pages\RemarkListPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="BeverageListPage.xaml">
+	  <MauiXaml Update="Pages\CountryItemPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="MainPage.xaml">
+	  <MauiXaml Update="Pages\CategoryItemPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\BeverageItemPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\BeverageListPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CountryListPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\MainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
