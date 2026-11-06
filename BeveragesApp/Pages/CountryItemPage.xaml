@@ -3,26 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.CountryItemPage">
 
-    <ContentPage.MenuBarItems>
-        <MenuBarItem Text="Arkiv">
-            <MenuFlyoutItem
-            Clicked="OnQuitClicked"
-            Text="Avsluta" />
-        </MenuBarItem>
-        <MenuBarItem Text="Information">
-            <MenuFlyoutItem Text="Drycker"/>
-            <MenuFlyoutItem Text="Kategorier" />
-            <MenuFlyoutItem Text="Länder" />
-            <MenuFlyoutItem Text="Graderingar" />
-        </MenuBarItem>
-        <MenuBarItem Text="Visa">
-            <MenuFlyoutItem Text="Uppdatera" />
-            <MenuFlyoutItem Text="Toggle Light/Dark Mode" />
-        </MenuBarItem>
-        <MenuBarItem Text="Hjälp">
-        </MenuBarItem>
-    </ContentPage.MenuBarItems>
-    
     <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
             <Label Text="Land"
             SemanticProperties.HeadingLevel="Level1"

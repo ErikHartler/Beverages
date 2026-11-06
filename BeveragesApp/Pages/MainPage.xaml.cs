@@ -16,7 +16,6 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
         _dataContext = dataContext; // Assign the injected DataContext instance to the private field
-        BindingContext = this; //MVVM pattern: The BindingContext is set to the MainPage instance itself, allowing data binding between the UI and the code-behind.
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
  
     }

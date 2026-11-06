@@ -20,15 +20,11 @@ public partial class RemarkListPage : ContentPage
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
- 
-        Remarks = [];
-        BindingContext = this; 
-
         LoadRemarks(CancellationToken.None); 
     }
     #endregion
     #region public  properties
-    public ObservableCollection<Remark> Remarks{ get; set; }
+    public ObservableCollection<Remark> Remarks{ get; set; } = [];
     #endregion
 
     #region private methods
@@ -74,29 +70,21 @@ public partial class RemarkListPage : ContentPage
     
     private async void OnDeleteRemarkClicked(object? sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is Remark selectedRemark)
+        var selectedRemark = (sender as Button)?.CommandParameter as Remark;
+        if (await _contentPageHelper.ConfirmDeleteAsync(selectedRemark!, "betyget"))
         {
-            bool confirmDelete = await DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort påminnelsen '{selectedRemark.Name}'?", "Yes", "No"); // Ask for confirmation before deleting
-            if (!confirmDelete)
-            {
-                return; // Exit the method if the user cancels the deletion
-            }
-
             try
             {
-                _dataContext.Remarks.Remove(selectedRemark); // Remove the selected drink from the DbSet
+                _dataContext.Remarks.Remove(selectedRemark!); // Remove the selected drink from the DbSet
                 await _dataContext.SaveChangesAsync(); // Save changes to the database
-                Remarks.Remove(selectedRemark); // Remove the selected drink from the ObservableCollection to update the UI
+                Remarks.Remove(selectedRemark!); // Remove the selected drink from the ObservableCollection to update the UI
             }
             catch (Exception ex)
             {
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av kategorin: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
-        else
-        {
-            await DisplayAlertAsync("Fel", "Vänligen välj en kategori att ta bort.", "OK"); // Display an error message if no drink is selected
-        }
+      
     }
     private async void OnUpdateRemarkClicked(object? sender, EventArgs e)
     {

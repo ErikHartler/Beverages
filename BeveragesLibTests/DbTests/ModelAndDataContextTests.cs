@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 
 
-namespace BeveragesLibTests;
+namespace BeveragesLibTests.DbTests;
 
 [TestClass]
 public sealed class DataContextTests
@@ -20,7 +20,7 @@ public sealed class DataContextTests
         _connection = new SqliteConnection("Data Source=:memory:");
         await _connection.OpenAsync(TestContext.CancellationToken);
 
-        var options = new DbContextOptionsBuilder<DataContext>()
+        DbContextOptions<DataContext> options = new DbContextOptionsBuilder<DataContext>()
             .UseSqlite(_connection)
             .Options;
         _dataContext = new DataContext(options);
@@ -37,16 +37,16 @@ public sealed class DataContextTests
     [TestMethod]
     public void Model_ConfiguresEntityIdsAsGeneratedOnAdd()
     {
-        var categoryId = _dataContext.Model
+        IProperty categoryId = _dataContext.Model
             .FindEntityType(typeof(BeverageCategory))!
             .FindProperty(nameof(BeverageCategory.Id))!;
-        var beverageId = _dataContext.Model
+        IProperty beverageId = _dataContext.Model
             .FindEntityType(typeof(Beverage))!
             .FindProperty(nameof(Beverage.Id))!;
-        var countryId = _dataContext.Model
+        IProperty countryId = _dataContext.Model
             .FindEntityType(typeof(Country))!
             .FindProperty(nameof(Country.Id))!;
-        var remarkId = _dataContext.Model
+        IProperty remarkId = _dataContext.Model
             .FindEntityType(typeof(Remark))!
             .FindProperty(nameof(Remark.Id))!;
 
@@ -59,15 +59,19 @@ public sealed class DataContextTests
     [TestMethod]
     public async Task SaveChanges_GeneratesIdsAndPersistsBeverageRelationshipsAndPhoto()
     {
-        var category = new BeverageCategory { Name = "Kaffe" };
-        var country = new Country { Name = "Sverige" };
-        var remark = new Remark { Name = "Excellent", Order = 5 };
+        string beverageName = "Espresso";
+        string categoryName = "Kaffe";
+        string countryName = "Sverige";
+        string remarkName = "Strålande";
+        var category = new BeverageCategory { Name = categoryName };
+        var country = new Country { Name = countryName };
+        var remark = new Remark { Name = remarkName, Order = 5 };
         _dataContext.AddRange(category, country, remark);
         await _dataContext.SaveChangesAsync(TestContext.CancellationToken);
 
         var beverage = new Beverage
         {
-            Name = "Espresso",
+            Name = beverageName,
             Category = category,
             CountryOfOrigin = country,
             ReviewRemark = remark,
@@ -84,16 +88,16 @@ public sealed class DataContextTests
         Assert.IsGreaterThan(0, beverage.Id);
 
         _dataContext.ChangeTracker.Clear();
-        var persistedBeverage = await _dataContext.Beverages
+        Beverage persistedBeverage = await _dataContext.Beverages
             .Include(item => item.Category)
             .Include(item => item.CountryOfOrigin)
             .Include(item => item.ReviewRemark)
             .SingleAsync(TestContext.CancellationToken);
 
-        Assert.AreEqual("Espresso", persistedBeverage.Name);
-        Assert.AreEqual("Kaffe", persistedBeverage.Category.Name);
-        Assert.AreEqual("Sverige", persistedBeverage.CountryOfOrigin.Name);
-        Assert.AreEqual("Excellent", persistedBeverage.ReviewRemark.Name);
+        Assert.AreEqual(beverageName, persistedBeverage.Name);
+        Assert.AreEqual(categoryName, persistedBeverage.Category.Name);
+        Assert.AreEqual(countryName, persistedBeverage.CountryOfOrigin.Name);
+        Assert.AreEqual(remarkName, persistedBeverage.ReviewRemark.Name);
         Assert.AreEqual(5, persistedBeverage.ReviewRemark.Order);
         Assert.IsNotNull(persistedBeverage.PhotoImage);
         Assert.AreSequenceEqual(new byte[] { 1, 2, 3 }, persistedBeverage.PhotoImage!);

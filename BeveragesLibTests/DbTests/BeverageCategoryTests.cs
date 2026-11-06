@@ -1,6 +1,6 @@
 using BeveragesLib.Models;
 
-namespace BeveragesLibTests;
+namespace BeveragesLibTests.DbTests;
 
 [TestClass]
 public sealed class BeverageCategoryTests
@@ -10,7 +10,7 @@ public sealed class BeverageCategoryTests
     [TestMethod]
     public void Seed_ReturnsExpectedCategoriesWithUnsetIds()
     {
-        var categories = BeverageCategory.Seed();
+        List<BeverageCategory> categories = BeverageCategory.Seed();
 
         Assert.AreSequenceEqual(
             expected, [.. categories.Select(category => category.Name)]);

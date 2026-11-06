@@ -11,25 +11,23 @@ public partial class DataContext(DbContextOptions<DataContext> options) : DbCont
         modelBuilder.Entity<BeverageCategory>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable("BeverageCategories");
+            entity.ToTable("BeverageCategory");
             entity.Property(e => e.Id)
                 .HasColumnName("Id")
                 .ValueGeneratedOnAdd();
         });
-
         modelBuilder.Entity<Beverage>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable("Beverages");
+            entity.ToTable("Beverage");
             entity.Property(e => e.Id)
                 .HasColumnName("Id")
                 .ValueGeneratedOnAdd();
         });
-
         modelBuilder.Entity<Country>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable("Countries");
+            entity.ToTable("Country");
             entity.Property(e => e.Id)
                 .HasColumnName("Id")
                 .ValueGeneratedOnAdd();
@@ -37,7 +35,7 @@ public partial class DataContext(DbContextOptions<DataContext> options) : DbCont
         modelBuilder.Entity<Remark>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable("Remarks");
+            entity.ToTable("Remark");
             entity.Property(e => e.Id)
                 .HasColumnName("Id")
                 .ValueGeneratedOnAdd();

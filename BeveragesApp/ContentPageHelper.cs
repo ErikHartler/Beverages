@@ -1,5 +1,6 @@
-﻿using BeveragesLib.Data;
-
+﻿
+using BeveragesLib.Data;
+using BeveragesLib.Models;
 
 namespace BeveragesApp
 {
@@ -9,19 +10,22 @@ namespace BeveragesApp
         private readonly DataContext _dataContext;
         private readonly CancellationToken _cancellationToken;
 
-        public ContentPageHelper(ContentPage contentPage,DataContext dataContext, CancellationToken cancellationToken)
+        public ContentPageHelper(ContentPage contentPage, DataContext dataContext, CancellationToken cancellationToken)
         {
             _contentPage = contentPage;
             _dataContext = dataContext;
             _cancellationToken = cancellationToken;
+
 #if ANDROID
             AddAndroidMenuItem("Drycker", OnShowBeveragesClicked);
-            AddAndroidMenuItem("Kategorier", OnShowCategoriesClicked);
             AddAndroidMenuItem("Kategorier", OnShowCategoriesClicked);
             AddAndroidMenuItem("Länder", OnShowCountriesClicked);
             AddAndroidMenuItem("Betyg", OnShowRemarksClicked);
             AddAndroidMenuItem("Avsluta", OnQuitClicked);
+#else
+            AddMenuBarItems();
 #endif
+            _contentPage.BindingContext = contentPage;
         }
 
 #if ANDROID
@@ -30,6 +34,40 @@ namespace BeveragesApp
             ToolbarItem item = new() { Text = text, Order = ToolbarItemOrder.Secondary };
             item.Clicked += handler;
             _contentPage.ToolbarItems.Add(item);
+        }
+#else
+        private void AddMenuBarItems()
+        {
+            MenuBarItem fileMenu = new() { Text = "Arkiv" };
+            fileMenu.Add(CreateMenuFlyoutItem("Avsluta", OnQuitClicked));
+
+            MenuBarItem informationMenu = new() { Text = "Information" };
+            informationMenu.Add(CreateMenuFlyoutItem("Drycker", OnShowBeveragesClicked));
+            informationMenu.Add(CreateMenuFlyoutItem("Kategorier", OnShowCategoriesClicked));
+            informationMenu.Add(CreateMenuFlyoutItem("Länder", OnShowCountriesClicked));
+            informationMenu.Add(CreateMenuFlyoutItem("Graderingar", OnShowRemarksClicked));
+
+            MenuBarItem viewMenu = new() { Text = "Visa" };
+            viewMenu.Add(CreateMenuFlyoutItem("Uppdatera"));
+            viewMenu.Add(CreateMenuFlyoutItem("Toggle Light/Dark Mode"));
+
+            MenuBarItem helpMenu = new() { Text = "Hjälp" };
+
+            _contentPage.MenuBarItems.Add(fileMenu);
+            _contentPage.MenuBarItems.Add(informationMenu);
+            _contentPage.MenuBarItems.Add(viewMenu);
+            _contentPage.MenuBarItems.Add(helpMenu);
+        }
+
+        private static MenuFlyoutItem CreateMenuFlyoutItem(string text, EventHandler? handler = null)
+        {
+            MenuFlyoutItem item = new() { Text = text };
+            if (handler is not null)
+            {
+                item.Clicked += handler;
+            }
+
+            return item;
         }
 #endif
         public async void OnQuitClicked(object? sender, EventArgs e)
@@ -89,7 +127,22 @@ namespace BeveragesApp
                 await _contentPage.DisplayAlertAsync("Fel", $"Ett fel uppstod: {ex}", "OK");
             }
         }
-        
+
+        public async Task<bool> ConfirmDeleteAsync(IdName sender, string selectedItemName)
+        {
+            bool confirmDelete = false;
+            if (sender !=null)
+            {
+                confirmDelete = await _contentPage.DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort {selectedItemName} {sender.Name}?", "Yes", "No");
+            }
+            else
+            {
+                await _contentPage.DisplayAlertAsync("Fel", $"Vänligen välj en {selectedItemName} att ta bort.", "OK"); 
+            }
+
+            return confirmDelete;   
+        }
+         
 
     }
 }

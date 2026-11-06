@@ -1,6 +1,6 @@
 using BeveragesLib.Models;
 
-namespace BeveragesLibTests;
+namespace BeveragesLibTests.DbTests;
 
 [TestClass]
 public sealed class RemarkTests
@@ -11,7 +11,7 @@ public sealed class RemarkTests
         List<Remark> remarks = Remark.Seed();
 
         Assert.AreSequenceEqual(
-            ["Horrible", "Not Good", "Average", "Good", "Excellent"],
+            ["Hemskt", "Inte bra", "Medelmåttligt", "Bra", "Strålande"],
             [.. remarks.Select(remark => remark.Name)]);
         Assert.AreSequenceEqual(
             [1, 2, 3, 4, 5],

@@ -1,5 +1,7 @@
 ﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeveragesApp;
 
@@ -19,39 +21,20 @@ public partial class CountryItemPage : ContentPage
         _dataContext = dataContext; // Assign the injected DataContext instance to the private field
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
- 
         _country = country;
-        BindingContext = this; //MVVM pattern: The BindingContext is set to the BeverageListPage instance itself, allowing data binding between the UI and the code-behind.
         CountryNameEntry.Text = _country.Name;
         CountryIdEntry.Text = _country.Id.ToString();
     }
     #endregion
-    #region public properties
 
-    #endregion
-
-    #region private methods
-    #endregion
     #region private event handlers
-
-    private async void OnQuitClicked(object? sender, EventArgs e)
-    {
-        _contentPageHelper.OnQuitClicked(sender, e);
-    }
     private async void OnDeleteCountryClicked(object? sender, EventArgs e)
     {
-        if (int.Parse(CountryIdEntry.Text.Trim()) == 0) return;
-        if (sender is Button button && button.CommandParameter is Country selectedCountry )
+        if (await _contentPageHelper.ConfirmDeleteAsync(_country, "landet"))
         {
-            bool confirmDelete = await DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort landet '{selectedCountry.Name}'?", "Yes", "No"); // Ask for confirmation before deleting
-            if (!confirmDelete)
-            {
-                return; // Exit the method if the user cancels the deletion
-            }
-
             try
             {
-                _dataContext.Countries.Remove(selectedCountry); // Remove the selected country from the DbSet
+                _dataContext.Countries.Remove(_country); // Remove the selected country from the DbSet
                 await _dataContext.SaveChangesAsync(); // Save changes to the database
             }
             catch (Exception ex)
@@ -59,10 +42,7 @@ public partial class CountryItemPage : ContentPage
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av landet: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
-        else
-        {
-            await DisplayAlertAsync("Fel", "Vänligen välj en dryck att ta bort.", "OK"); // Display an error message if no drink is selected
-        }
+        
     }
     private async void OnUpdateCountryClicked(object? sender, EventArgs e)
     {
@@ -89,7 +69,23 @@ public partial class CountryItemPage : ContentPage
                 {
                     _dataContext.Countries.Add(_country);
                 }
-                await _dataContext.SaveChangesAsync();
+                if (await _dataContext.Countries.AnyAsync(x => x.Name == CountryNameEntry.Text.Trim() && x.Id != _country.Id))
+                {
+                    await DisplayAlertAsync("Fel", $"Namnet {CountryNameEntry.Text.Trim()} är redan registrerat.", "OK");
+                    return;
+                }
+                try
+                {
+                    await _dataContext.SaveChangesAsync();
+                }
+                catch (DbUpdateException dbEx) when (dbEx.InnerException is SqliteException sqliteEx && sqliteEx.SqliteErrorCode == 19)
+                {
+                    await DisplayAlertAsync("Fel", $"Gick inte att spara, {dbEx}", "OK");
+                    return;
+                };
+
+                var country = await _dataContext.Countries.FirstAsync(x => x.Name == CountryNameEntry.Text.Trim(), _cancellationToken);
+                CountryIdEntry.Text = country.Id.ToString();
             }
             catch (Exception ex)
             {

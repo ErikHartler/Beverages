@@ -18,55 +18,42 @@ public partial class BeverageListPage : ContentPage
         InitializeComponent();
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
-        _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
- 
-        Beverages = [];
-        BindingContext = this; 
+        LoadBeveragesAsync(_cancellationToken);
+        _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);        
     }
     #endregion
     #region public properties
-    public ObservableCollection<Beverage> Beverages { get; set; }
+    public ObservableCollection<Beverage> Beverages { get; set; } = [];
     #endregion
-
-    #region private event handlers
-    private async void OnQuitClicked(object? sender, EventArgs e)
-    {
-        _contentPageHelper.OnQuitClicked(sender, e);
-    }
+    #region protected event handlers
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await LoadBeveragesAsync(CancellationToken.None);
+        LoadBeveragesAsync(CancellationToken.None);
     }
 
-    private async Task LoadBeveragesAsync(CancellationToken cancellationToken)
+    #endregion
+    #region private event handlers
+
+    private async  void LoadBeveragesAsync(CancellationToken cancellationToken)
     {
         try
         {
             await _dataContext.Database.EnsureCreatedAsync(cancellationToken); // Ensure the database is created before querying
-
             List<Beverage> beverages = await _dataContext.Beverages
                 .Include(beverage => beverage.Category)
                 .ToListAsync(cancellationToken);
-
             Beverages.Clear();
             foreach (Beverage? beverage in beverages)
             {
                 Beverages.Add(beverage); // Add each retrieved drink to the ObservableCollection
             }
-
         }
         catch (Exception ex)
         {
             await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
         }
-    }
-
-    private async void OnRefreshClicked(object? sender, EventArgs e)
-    {
-        await LoadBeveragesAsync(CancellationToken.None);
-    }
-     
+    }  
     
     private async void OnAddBeverageClicked(object? sender, EventArgs e)
     {
@@ -95,28 +82,20 @@ public partial class BeverageListPage : ContentPage
     }
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is Beverage selectedBeverage)
+        var selectedBeverage = (sender as Button)?.CommandParameter as Beverage;
+        if (await _contentPageHelper.ConfirmDeleteAsync(selectedBeverage!, "drycken"))
         {
-            bool confirmDelete = await DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort drycken '{selectedBeverage.Name}'?", "Yes", "No"); // Ask for confirmation before deleting
-            if (!confirmDelete)
-            {
-                return; // Exit the method if the user cancels the deletion
-            }
 
             try
             {
-                _dataContext.Beverages.Remove(selectedBeverage); // Remove the selected drink from the DbSet
+                _dataContext.Beverages.Remove(selectedBeverage!); // Remove the selected drink from the DbSet
                 await _dataContext.SaveChangesAsync(); // Save changes to the database
-                await LoadBeveragesAsync(CancellationToken.None); // Refresh the list of drinks after deletion
+                LoadBeveragesAsync(CancellationToken.None); // Refresh the list of drinks after deletion
             }
             catch (Exception ex)
             {
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av drycken: {ex}", "OK"); // Display an error message if an exception occurs
             }
-        }
-        else
-        {
-            await DisplayAlertAsync("Fel", "Vänligen välj en dryck att ta bort.", "OK"); // Display an error message if no drink is selected
         }
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)

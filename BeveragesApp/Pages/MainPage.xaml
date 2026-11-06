@@ -3,36 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.MainPage">
 
-    <ContentPage.MenuBarItems>
-        <MenuBarItem Text="Arkiv">
-            <MenuFlyoutItem
-              Clicked="OnQuitClicked"
-              Text="Avsluta" />
-        </MenuBarItem>
-        <MenuBarItem Text="Information">
-            <MenuFlyoutItem Text="Drycker"/>
-            <MenuFlyoutItem Text="Kategorier" />
-            <MenuFlyoutItem Text="Länder" />
-            <MenuFlyoutItem Text="Betyg" />
-        </MenuBarItem>
-        <MenuBarItem Text="Visa">
-            <MenuFlyoutItem Text="Uppdatera" />
-            <MenuFlyoutItem Text="Toggle Light/Dark Mode" />
-        </MenuBarItem>
-        <MenuBarItem Text="Hjälp">
-        </MenuBarItem>
-    </ContentPage.MenuBarItems>
-
     <ScrollView>
         <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
             <Label Text="Svenska kräftor kräfva dessa drycker"
             SemanticProperties.HeadingLevel="Level1"
             FontSize="32"
             HorizontalOptions="Center" VerticalTextAlignment="Center"/>
-            <Button Text="Visa drycker" Clicked="OnShowBeveragesClicked" />
-            <Button Text="Visa kategorier" Clicked="OnShowCategoriesClicked" />
-            <Button Text="Visa länder" Clicked="OnShowCountriesClicked" />
-            <Button Text="Visa graderingar" Clicked="OnShowRemarksClicked" />
+            <Button Text="Drycker" Clicked="OnShowBeveragesClicked" />
             <Button Text="Avsluta" Clicked="OnQuitClicked" />
 
         </VerticalStackLayout>

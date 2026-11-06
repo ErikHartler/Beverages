@@ -1,6 +1,6 @@
 using BeveragesLib.Models;
 
-namespace BeveragesLibTests;
+namespace BeveragesLibTests.DbTests;
 
 [TestClass]
 public sealed class CountryTests

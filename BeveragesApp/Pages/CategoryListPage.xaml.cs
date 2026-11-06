@@ -20,23 +20,22 @@ public partial class CategoryListPage : ContentPage
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
- 
-        Categories = [];
-        BindingContext = this; 
-
-        LoadCategories(CancellationToken.None); 
     }
     #endregion
     #region public  properties
-    public ObservableCollection<BeverageCategory> Categories { get; set; }
+    public ObservableCollection<BeverageCategory> Categories { get; set; } = [];
+    #endregion
+    #region protected event handlers
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        LoadCategoriesAsync(CancellationToken.None);
+    }
+
     #endregion
 
-    #region private methods
-    private async void OnQuitClicked(object? sender, EventArgs e)
-    {
-        _contentPageHelper.OnQuitClicked(sender, e);
-    }
-    private async void LoadCategories(CancellationToken cancellationToken)
+    #region private event handlers
+    private async void LoadCategoriesAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -57,8 +56,7 @@ public partial class CategoryListPage : ContentPage
             await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
-    #endregion
-    #region private event handlers
+    
     private async void OnAddCategoryClicked(object? sender, EventArgs e)
     {
         try
@@ -74,19 +72,15 @@ public partial class CategoryListPage : ContentPage
 
     private async void OnDeleteCategoryClicked(object? sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is BeverageCategory selectedCategory)
+        var selectedCategory = (sender as Button)?.CommandParameter as BeverageCategory;
+        if (await _contentPageHelper.ConfirmDeleteAsync(selectedCategory!, "kategorin"))
         {
-            bool confirmDelete = await DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort kategorin '{selectedCategory.Name}'?", "Yes", "No"); // Ask for confirmation before deleting
-            if (!confirmDelete)
-            {
-                return; // Exit the method if the user cancels the deletion
-            }
-
+         
             try
             {
-                _dataContext.BeverageCategories.Remove(selectedCategory); // Remove the selected drink from the DbSet
+                _dataContext.BeverageCategories.Remove(selectedCategory!); // Remove the selected drink from the DbSet
                 await _dataContext.SaveChangesAsync(); // Save changes to the database
-                Categories.Remove(selectedCategory); // Remove the selected drink from the ObservableCollection to update the UI
+                Categories.Remove(selectedCategory!); // Remove the selected drink from the ObservableCollection to update the UI
             }
             catch (Exception ex)
             {

@@ -9,7 +9,7 @@ public partial class CountryListPage : ContentPage
 {
     #region private members
     private readonly DataContext _dataContext;
-    private readonly CancellationToken _cancellationToken = new();
+    private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
 
     #endregion
@@ -20,22 +20,15 @@ public partial class CountryListPage : ContentPage
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
- 
-        Countries = [];
-        BindingContext = this; 
-
         LoadCountries(CancellationToken.None); 
     }
     #endregion
     #region public  properties
-    public ObservableCollection<Country> Countries { get; set; }
+    public ObservableCollection<Country> Countries { get; set; } = [];
     #endregion
 
-    #region private methods
-    private async void OnQuitClicked(object? sender, EventArgs e)
-    {
-        _contentPageHelper.OnQuitClicked(sender, e);
-    }
+    #region private event handlers
+
     private async void LoadCountries(CancellationToken cancellationToken)
     {
         try
@@ -57,8 +50,7 @@ public partial class CountryListPage : ContentPage
             await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
-    #endregion
-    #region private event handlers
+    
     private async void OnAddCountryClicked(object? sender, EventArgs e)
     {
         try
@@ -74,19 +66,16 @@ public partial class CountryListPage : ContentPage
     
     private async void OnDeleteCountryClicked(object? sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is Country selectedCountry)
+        var selectedCountry = (sender as Button)?.CommandParameter as Country;
+        if (await _contentPageHelper.ConfirmDeleteAsync(selectedCountry!, "landet"))
         {
-            bool confirmDelete = await DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort landet '{selectedCountry.Name}'?", "Yes", "No"); // Ask for confirmation before deleting
-            if (!confirmDelete)
-            {
-                return; // Exit the method if the user cancels the deletion
-            }
+            
 
             try
             {
-                _dataContext.Countries.Remove(selectedCountry); // Remove the selected country from the DbSet
+                _dataContext.Countries.Remove(selectedCountry!); // Remove the selected country from the DbSet
                 await _dataContext.SaveChangesAsync(); // Save changes to the database
-                Countries.Remove(selectedCountry); // Remove the selected country from the ObservableCollection to update the UI
+                Countries.Remove(selectedCountry!); // Remove the selected country from the ObservableCollection to update the UI
             }
             catch (Exception ex)
             {

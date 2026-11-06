@@ -21,8 +21,9 @@ public static class MauiProgram
             options =>
             {
                 string dbPath = Path.Combine(FileSystem.AppDataDirectory, "beverages.db");
+                //File.Delete(dbPath); // Delete the existing database file to ensure a fresh start
                 options.UseSqlite($"Data Source={dbPath}");
-            }); //Dependency injection for the DataContext class, which allows it to be used throughout the application.
+            }); 
 #if DEBUG
         builder.Logging.SetMinimumLevel(LogLevel.Debug);
         builder.Logging.AddDebug();
@@ -32,24 +33,24 @@ public static class MauiProgram
         {
             DataContext dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
             dbContext.Database.EnsureCreated(); // Ensure the database is created when the application starts
-            bool anyMissing = false;
+            bool anySeeding = false;
             if (!dbContext.BeverageCategories.Any())
             {
                 // Add initial data if the database is empty
                 dbContext.BeverageCategories.AddRange(BeverageCategory.Seed());
-                anyMissing = true;
+                anySeeding = true;
             }
             if (!dbContext.Countries.Any())
             {
                 dbContext.Countries.AddRange(Country.Seed());
-                anyMissing = true;
+                anySeeding = true;
             }
             if (!dbContext.Remarks.Any())
             {
                 dbContext.Remarks.AddRange(Remark.Seed());
-                anyMissing = true;
+                anySeeding = true;
             }
-            if (anyMissing)
+            if (anySeeding)
             {
                 dbContext.SaveChanges();
             }

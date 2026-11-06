@@ -1,5 +1,6 @@
 ﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeveragesApp;
 
@@ -19,40 +20,24 @@ public partial class RemarkItemPage : ContentPage
         _dataContext = dataContext; // Assign the injected DataContext instance to the private field
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
- 
         _remark = remark;
-        BindingContext = this; //MVVM pattern: The BindingContext is set to the BeverageListPage instance itself, allowing data binding between the UI and the code-behind.
-        RemarkOrderEntry.Text=remark.Order.ToString();
+          
+        RemarkOrderEntry.Text= _remark.Order.ToString();
         RemarkTextEntry.Text = _remark.Name;
         RemarkIdEntry.Text = _remark.Id.ToString();
     }
     #endregion
-    #region public properties
 
-    #endregion
-
-    #region private methods
-    #endregion
+ 
     #region private event handlers
-
-    private async void OnQuitClicked(object? sender, EventArgs e)
-    {
-        _contentPageHelper.OnQuitClicked(sender, e);
-    }
+     
     private async void OnDeleteRemarkClicked(object? sender, EventArgs e)
     {
-        if (int.Parse(RemarkIdEntry.Text.Trim()) == 0) return;
-        if (sender is Button button && button.CommandParameter is Remark selectedRemark )
+        if (await _contentPageHelper.ConfirmDeleteAsync(_remark, "betyget"))
         {
-            bool confirmDelete = await DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort påminnelsen '{selectedRemark.Name}'?", "Yes", "No"); // Ask for confirmation before deleting
-            if (!confirmDelete)
-            {
-                return; // Exit the method if the user cancels the deletion
-            }
-
             try
             {
-                _dataContext.Remarks.Remove(selectedRemark); // Remove the selected remark from the DbSet
+                _dataContext.Remarks.Remove(_remark); // Remove the selected remark from the DbSet
                 await _dataContext.SaveChangesAsync(); // Save changes to the database
             }
             catch (Exception ex)
@@ -93,7 +78,15 @@ public partial class RemarkItemPage : ContentPage
                 {
                     _dataContext.Remarks.Add(_remark);
                }
-                await _dataContext.SaveChangesAsync(); 
+                if (await _dataContext.Remarks.AnyAsync(x => x.Name == RemarkTextEntry.Text.Trim() && x.Id != _remark.Id))
+                {
+                    await DisplayAlertAsync("Fel", $"Namnet {RemarkTextEntry.Text.Trim()} är redan registrerat.", "OK");
+                    return;
+                }
+
+                await _dataContext.SaveChangesAsync();
+                var remark = await _dataContext.Remarks.FirstAsync(x => x.Name == RemarkTextEntry.Text.Trim(), _cancellationToken);
+                RemarkIdEntry.Text = remark.Id.ToString();
             }
             catch (Exception ex)
             {

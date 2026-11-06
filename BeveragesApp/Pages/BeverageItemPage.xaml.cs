@@ -1,5 +1,7 @@
 ﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeveragesApp;
 
@@ -22,7 +24,6 @@ public partial class BeverageItemPage : ContentPage
         _cancellationToken = cancellationToken;
         _beverage = beverage;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken); 
-        BindingContext = this; 
         BeverageIdEntry.Text = beverage.Id.ToString();
         BeverageNameEntry.Text = beverage.Name;
         BeveragePriceEntry.Text = beverage.Price.ToString();    
@@ -46,12 +47,7 @@ public partial class BeverageItemPage : ContentPage
         await LoadRemarksAsync(_cancellationToken);
     }
     #endregion
-    #region private event handlers
-    private async void OnQuitClicked(object? sender, EventArgs e)
-    {
-        _contentPageHelper.OnQuitClicked(sender, e);
-    }
-    
+    #region private event handlers    
     private async void OnCapturePhotoClicked(object? sender, EventArgs e)
     {
         try
@@ -141,28 +137,18 @@ public partial class BeverageItemPage : ContentPage
     
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
-        if (int.Parse(BeverageIdEntry.Text.Trim()) == 0) return;
-        if (sender is Button button && button.CommandParameter is Beverage selectedBeverage)
+        if (await _contentPageHelper.ConfirmDeleteAsync(_beverage, "drycken"))
         {
-            bool confirmDelete = await DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort drycken '{selectedBeverage.Name}'?", "Yes", "No"); // Ask for confirmation before deleting
-            if (!confirmDelete)
-            {
-                return; 
-            }
-
             try
             {
-                _dataContext.Beverages.Remove(selectedBeverage); // Remove the selected drink from the DbSet
+                _dataContext.Beverages.Remove(_beverage!); // Remove the selected drink from the DbSet
                 await _dataContext.SaveChangesAsync(); // Save changes to the database
+                await Navigation.PopAsync(); // Navigate back to the previous page after deletion
             }
             catch (Exception ex)
             {
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av drycken: {ex}", "OK"); // Display an error message if an exception occurs
             }
-        }
-        else
-        {
-            await DisplayAlertAsync("Fel", "Vänligen välj en dryck att ta bort.", "OK"); // Display an error message if no drink is selected
         }
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
@@ -173,8 +159,8 @@ public partial class BeverageItemPage : ContentPage
             {
                 await DisplayAlertAsync(
                     "Fel",
-                    "ange kategorins namn.",
-                    "OK"); // Display an error message if the new category name is empty
+                    "Ange kategorins namn.",
+                    "OK"); 
                 return;
             }
             try
@@ -193,11 +179,25 @@ public partial class BeverageItemPage : ContentPage
                     _beverage.Id = id;
                     _dataContext.Beverages.Update(_beverage);
                 }
-                else
+                else 
                 {
                     _dataContext.Beverages.Add(_beverage);
                 }
-                await _dataContext.SaveChangesAsync();
+                if (await _dataContext.Beverages.AnyAsync(x => x.Name == BeverageNameEntry.Text.Trim() && x.Id != _beverage.Id))
+                {
+                    await DisplayAlertAsync("Fel", $"Namnet {BeverageNameEntry.Text.Trim()} är redan registrerat.", "OK");
+                    return;
+                }
+                try {
+                    await _dataContext.SaveChangesAsync();
+                }
+                catch(DbUpdateException dbEx) when (dbEx.InnerException is SqliteException sqliteEx && sqliteEx.SqliteErrorCode ==  19)
+                {
+                    await DisplayAlertAsync("Fel", $"Gick inte att spara, {dbEx}", "OK");
+                    return;
+                };
+                var beverage = await _dataContext.Beverages.FirstAsync(x => x.Name == BeverageNameEntry.Text.Trim(), _cancellationToken);
+                BeverageIdEntry.Text = beverage.Id.ToString();
             }
             catch (Exception ex)
             {

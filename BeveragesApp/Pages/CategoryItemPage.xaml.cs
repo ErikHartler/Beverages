@@ -1,5 +1,7 @@
 ﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeveragesApp;
 
@@ -19,9 +21,7 @@ public partial class CategoryItemPage : ContentPage
         _dataContext = dataContext; // Assign the injected DataContext instance to the private field
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
- 
         _beverageCategory = beverageCategory;
-        BindingContext = this; //MVVM pattern: The BindingContext is set to the BeverageListPage instance itself, allowing data binding between the UI and the code-behind.
         CategoryNameEntry.Text = beverageCategory.Name;
         CategoryIdEntry.Text = beverageCategory.Id.ToString();
     }
@@ -30,38 +30,22 @@ public partial class CategoryItemPage : ContentPage
 
     #endregion
 
-    #region private methods
-    #endregion
     #region private event handlers
 
-    private async void OnQuitClicked(object? sender, EventArgs e)
-    {
-        _contentPageHelper.OnQuitClicked(sender, e);
-    }
+  
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
-        if (int.Parse(CategoryIdEntry.Text.Trim()) == 0) return;
-        if (sender is Button button && button.CommandParameter is Beverage selectedBeverage )
+        if (await _contentPageHelper.ConfirmDeleteAsync(_beverageCategory, "kategorin"))
         {
-            bool confirmDelete = await DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort drycken '{selectedBeverage.Name}'?", "Yes", "No"); // Ask for confirmation before deleting
-            if (!confirmDelete)
-            {
-                return; // Exit the method if the user cancels the deletion
-            }
-
             try
             {
-                _dataContext.Beverages.Remove(selectedBeverage); // Remove the selected drink from the DbSet
+                _dataContext.BeverageCategories.Remove(_beverageCategory!); // Remove the selected category from the DbSet
                 await _dataContext.SaveChangesAsync(); // Save changes to the database
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av drycken: {ex}", "OK"); // Display an error message if an exception occurs
+                await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av kategorin: {ex}", "OK"); // Display an error message if an exception occurs
             }
-        }
-        else
-        {
-            await DisplayAlertAsync("Fel", "Vänligen välj en dryck att ta bort.", "OK"); // Display an error message if no drink is selected
         }
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
@@ -89,7 +73,24 @@ public partial class CategoryItemPage : ContentPage
                 {
                     _dataContext.BeverageCategories.Add(_beverageCategory);
                }
-                await _dataContext.SaveChangesAsync(); 
+                if (await _dataContext.BeverageCategories.AnyAsync(x => x.Name == CategoryNameEntry.Text.Trim() && x.Id != _beverageCategory.Id))
+                {
+                    await DisplayAlertAsync("Fel", $"Namnet {CategoryNameEntry.Text.Trim()} är redan registrerat.", "OK");
+                    return;
+                }
+                try
+                {
+                    await _dataContext.SaveChangesAsync();
+                }
+                catch (DbUpdateException dbEx) when (dbEx.InnerException is SqliteException sqliteEx && sqliteEx.SqliteErrorCode == 19)
+                {
+                    await DisplayAlertAsync("Fel", $"Gick inte att spara, {dbEx}", "OK");
+                    return;
+                };
+
+                var category = await _dataContext.BeverageCategories.FirstAsync<BeverageCategory>(x => x.Name == CategoryNameEntry.Text.Trim(), _cancellationToken);
+                CategoryIdEntry.Text = category.Id.ToString();
+
             }
             catch (Exception ex)
             {
