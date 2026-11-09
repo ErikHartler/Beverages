@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.RemarkListPage">
     <ScrollView>
-        <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
-            <Label Text="Betyg"
+        <VerticalStackLayout Spacing="5"  VerticalOptions="Center">
+            <Label Text="Graderingar"
             SemanticProperties.HeadingLevel="Level1"
-            FontSize="32"
+            Style="{StaticResource Headline}"
             HorizontalOptions="Center" />
-            <VerticalStackLayout Spacing="15">
+            <VerticalStackLayout Spacing="5">
                 <Button Text="Lägg till" Clicked="OnAddRemarkClicked" />
             </VerticalStackLayout>
             <CollectionView ItemsSource="{Binding Remarks}">
@@ -18,7 +18,6 @@
                             <Label Grid.Column="0"  
                                        x:Name="RemarkText"
                                        Text="{Binding Name}"
-                                       FontSize="24"
                                        VerticalOptions="Center" />
                             <Button Grid.Column="1" Text="Ändra" Clicked="OnUpdateRemarkClicked" CommandParameter="{Binding .}" />
                             <Button Grid.Column="2" Text="Ta bort" Clicked="OnDeleteRemarkClicked" CommandParameter="{Binding .}" />

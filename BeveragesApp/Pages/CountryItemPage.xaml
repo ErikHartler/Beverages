@@ -3,16 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.CountryItemPage">
 
-    <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+    <VerticalStackLayout Spacing="5"  VerticalOptions="Center">
             <Label Text="Land"
             SemanticProperties.HeadingLevel="Level1"
-            FontSize="32"
+            Style="{StaticResource Headline}"
             HorizontalOptions="Center" />
         <Entry x:Name="CountryIdEntry" Placeholder="Landets ID"  IsEnabled="False"  />
         <Entry x:Name="CountryNameEntry" Placeholder="Landets namn"   />
  
         <Image Source="{Binding SelectedCountry.ImageSource}"  />    
-        <Button Grid.Column="2" Text="Uppdatera" Clicked="OnUpdateCountryClicked" CommandParameter="{Binding .}" />
+        <Button Grid.Column="2" Text="Spara" Clicked="OnUpdateCountryClicked" CommandParameter="{Binding .}" />
             <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteCountryClicked" CommandParameter="{Binding .}" />
         </VerticalStackLayout>
 

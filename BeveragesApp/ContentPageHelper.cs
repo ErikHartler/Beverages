@@ -20,7 +20,7 @@ namespace BeveragesApp
             AddAndroidMenuItem("Drycker", OnShowBeveragesClicked);
             AddAndroidMenuItem("Kategorier", OnShowCategoriesClicked);
             AddAndroidMenuItem("Länder", OnShowCountriesClicked);
-            AddAndroidMenuItem("Betyg", OnShowRemarksClicked);
+            AddAndroidMenuItem("Graderingar", OnShowRemarksClicked);
             AddAndroidMenuItem("Avsluta", OnQuitClicked);
 #else
             AddMenuBarItems();

@@ -3,17 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.RemarkItemPage">
 
-    <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
-            <Label Text="Betyg"
+    <VerticalStackLayout Spacing="5"  VerticalOptions="Center">
+            <Label Text="Gradering"
             SemanticProperties.HeadingLevel="Level1"
-            FontSize="32"
+            Style="{StaticResource Headline}"
             HorizontalOptions="Center" />
-        <Entry x:Name="RemarkIdEntry" Placeholder="Betygs ID"  IsEnabled="False"  />
-        <Entry x:Name="RemarkOrderEntry" Placeholder="Betygets ordningsnr"   />
-        <Entry x:Name="RemarkTextEntry" Placeholder="Betygets namn"   />
+        <Entry x:Name="RemarkIdEntry" Placeholder="Gradering ID"  IsEnabled="False"  />
+        <Entry x:Name="RemarkOrderEntry" Placeholder="Graderingens ordningsnr"   />
+        <Entry x:Name="RemarkTextEntry" Placeholder="Graderingens namn"   />
  
         <Image Source="{Binding SelectedCategory.ImageSource}"  />    
-        <Button Grid.Column="2" Text="Uppdatera" Clicked="OnUpdateRemarkClicked" CommandParameter="{Binding .}" />
+        <Button Grid.Column="2" Text="Spara" Clicked="OnUpdateRemarkClicked" CommandParameter="{Binding .}" />
         <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteRemarkClicked" CommandParameter="{Binding .}" />
         </VerticalStackLayout>
 

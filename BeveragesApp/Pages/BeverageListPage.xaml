@@ -5,12 +5,11 @@
 
 
     <ScrollView>
-        <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+        <VerticalStackLayout Spacing="5"  VerticalOptions="Center">
             <Label Text="Drycker"
-            SemanticProperties.HeadingLevel="Level1"
-            FontSize="32"
+            SemanticProperties.HeadingLevel="Level1" Style="{StaticResource Headline}"
             HorizontalOptions="Center" />
-            <VerticalStackLayout Spacing="15">
+            <VerticalStackLayout Spacing="5">
                 <Button Text="Lägg till" Clicked="OnAddBeverageClicked" />
             </VerticalStackLayout>
             <CollectionView ItemsSource="{Binding Beverages}">
@@ -20,14 +19,11 @@
                             <Label Grid.Column="0"  
                                        x:Name="BeverageName"
                                        Text="{Binding Name}"
-                                       FontSize="24"
                                        VerticalOptions="Center" />
                             <Label Grid.Column="1"  
                                        x:Name="BeverageCategory"
                                        Text="{Binding Category.Name}"
-                                       FontSize="18"
                                        VerticalOptions="Center" />
-                            
                             <Button Grid.Column="2" Text="Ändra" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" />
                             <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" />
                         </Grid>

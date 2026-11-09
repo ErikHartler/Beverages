@@ -1,7 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="BeveragesApp/BeveragesApp.csproj">
-      <Deploy Solution="Release|*" />
+      <Deploy />
     </Project>
     <Project Path="BeveragesLib/BeveragesLib.csproj" Id="8be927bc-8938-44f5-a979-b8b50344a1b0" />
   </Folder>

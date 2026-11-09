@@ -4,10 +4,10 @@
              x:Class="BeveragesApp.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+        <VerticalStackLayout Spacing="0"  Padding="0,0" VerticalOptions="Center">
             <Label Text="Svenska kräftor kräfva dessa drycker"
             SemanticProperties.HeadingLevel="Level1"
-            FontSize="32"
+            Style="{StaticResource Headline}"
             HorizontalOptions="Center" VerticalTextAlignment="Center"/>
             <Button Text="Drycker" Clicked="OnShowBeveragesClicked" />
             <Button Text="Avsluta" Clicked="OnQuitClicked" />

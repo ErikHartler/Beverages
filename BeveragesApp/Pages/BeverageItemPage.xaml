@@ -3,31 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.BeverageItemPage">
 
-    <VerticalStackLayout Spacing="5" Padding="5,0" VerticalOptions="Center">
+    <VerticalStackLayout VerticalOptions="Center">
             <Label Text="Dryck"
-            SemanticProperties.HeadingLevel="Level1"
-            FontSize="32"
+            SemanticProperties.HeadingLevel="Level1" Style="{StaticResource Headline}"            
             HorizontalOptions="Center" VerticalTextAlignment="Center"/>
-        <Entry x:Name="BeverageIdEntry" Placeholder="Dryckens ID"  IsEnabled="False"  />
-        <Entry x:Name="BeverageNameEntry" Placeholder="Dryckens namn"   />
-        <Entry x:Name="BeverageDescriptionEntry" Placeholder="Dryckens beskrivning"   />
-        <Entry x:Name="BeveragePriceEntry" Placeholder="Dryckens pris"   />
+        <HorizontalStackLayout>
+            <Entry x:Name="BeverageIdEntry" Placeholder="Dryckens ID"  IsEnabled="False"  WidthRequest="70" />
+            <Entry x:Name="BeverageNameEntry" Placeholder="Dryckens namn"   WidthRequest="70"  />
+            <Entry x:Name="BeverageDescriptionEntry" Placeholder="Dryckens beskrivning"   WidthRequest="70"  />
+            <Entry x:Name="BeveragePriceEntry" Placeholder="Dryckens pris"   WidthRequest="70" />
+        </HorizontalStackLayout>
+        <HorizontalStackLayout>
+            <Picker Title="Välj dryckeskategori" x:Name="CategoryPicker"
+                    ItemDisplayBinding="{Binding Name}" WidthRequest="70" />
 
+            <Picker Title="Välj ursprungsland" x:Name="CountryPicker"
+                ItemDisplayBinding="{Binding Name}" WidthRequest="70" />
 
-        <Picker Title="Välj dryckeskategori" x:Name="CategoryPicker"
-            ItemDisplayBinding="{Binding Name}" />
+            <Picker Title="Betygsätt" x:Name="RemarkPicker"
+                ItemDisplayBinding="{Binding Name}" WidthRequest="70" />
+        </HorizontalStackLayout>
 
-        <Picker Title="Välj ursprungsland" x:Name="CountryPicker"
-            ItemDisplayBinding="{Binding Name}" />
+        <HorizontalStackLayout>
+            <Image x:Name="CapturedPhotoImage" WidthRequest="300" HeightRequest="150" />
+        </HorizontalStackLayout>
 
-        <Picker Title="Betygsätt" x:Name="RemarkPicker"
-            ItemDisplayBinding="{Binding Name}" />
-        
-        <Button Text="Ta foto" Clicked="OnCapturePhotoClicked" />
-        <Image x:Name="CapturedPhotoImage" WidthRequest="300" HeightRequest="150" />
-        
-        <Button Grid.Column="2" Text="Uppdatera" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" />
-            <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" />
-        </VerticalStackLayout>
+        <HorizontalStackLayout>
+            <Button Text="Ta foto" Clicked="OnCapturePhotoClicked" WidthRequest="140" />
+            <Button Grid.Column="2" Text="Spara" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" WidthRequest="100" />
+            <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" WidthRequest="100" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
 
 </ContentPage>
