@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableMSTestRunner>true</EnableMSTestRunner>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageReference Include="MSTest" Version="4.5.2" />
+    <PackageReference Include="Microsoft.Playwright.MSTest.v4" Version="1.64.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BeveragesApp.PlaywrightTestApp\BeveragesApp.PlaywrightTestApp.csproj" />
+  </ItemGroup>
+</Project>

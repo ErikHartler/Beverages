@@ -82,7 +82,7 @@ public partial class BeverageListPage : ContentPage
     }
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
-        var selectedBeverage = (sender as Button)?.CommandParameter as Beverage;
+        var selectedBeverage = (sender as ImageButton)?.CommandParameter as Beverage;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedBeverage!, "drycken"))
         {
 
@@ -100,7 +100,7 @@ public partial class BeverageListPage : ContentPage
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is Beverage selectedBeverage)
+        if (sender is ImageButton button && button.CommandParameter is Beverage selectedBeverage)
         {
             if (string.IsNullOrEmpty(selectedBeverage.Name))
             {
@@ -132,5 +132,9 @@ public partial class BeverageListPage : ContentPage
         }
     }
     #endregion
+    private async void GoBack(object? sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
+    }
 
 }

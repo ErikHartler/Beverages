@@ -72,7 +72,7 @@ public partial class CategoryListPage : ContentPage
 
     private async void OnDeleteCategoryClicked(object? sender, EventArgs e)
     {
-        var selectedCategory = (sender as Button)?.CommandParameter as BeverageCategory;
+        var selectedCategory = (sender as ImageButton)?.CommandParameter as BeverageCategory;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedCategory!, "kategorin"))
         {
          
@@ -94,7 +94,7 @@ public partial class CategoryListPage : ContentPage
     }
     private async void OnUpdateCategoryClicked(object? sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is BeverageCategory selectedCategory)
+        if (sender is ImageButton button && button.CommandParameter is BeverageCategory selectedCategory)
         {
             if (string.IsNullOrEmpty(selectedCategory.Name))
             {
@@ -123,5 +123,9 @@ public partial class CategoryListPage : ContentPage
         }
     }
     #endregion
+    private async void GoBack(object? sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
+    }
 
 }

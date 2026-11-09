@@ -46,7 +46,7 @@ public partial class CountryItemPage : ContentPage
     }
     private async void OnUpdateCountryClicked(object? sender, EventArgs e)
     {
-        if (sender is Button)
+        if (sender is ImageButton)
         {
             if (string.IsNullOrEmpty(CountryNameEntry.Text))
             {
@@ -98,5 +98,9 @@ public partial class CountryItemPage : ContentPage
         }
     }
     #endregion
+    private async void GoBack(object? sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
+    }
 
 }

@@ -4,6 +4,7 @@
              x:Class="BeveragesApp.RemarkItemPage">
 
     <VerticalStackLayout Spacing="5"  VerticalOptions="Center">
+            <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" HorizontalOptions="Start" />
             <Label Text="Gradering"
             SemanticProperties.HeadingLevel="Level1"
             Style="{StaticResource Headline}"
@@ -13,8 +14,8 @@
         <Entry x:Name="RemarkTextEntry" Placeholder="Graderingens namn"   />
  
         <Image Source="{Binding SelectedCategory.ImageSource}"  />    
-        <Button Grid.Column="2" Text="Spara" Clicked="OnUpdateRemarkClicked" CommandParameter="{Binding .}" />
-        <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteRemarkClicked" CommandParameter="{Binding .}" />
+        <ImageButton Source="save.svg" Clicked="OnUpdateRemarkClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Spara gradering" ToolTipProperties.Text="Spara" WidthRequest="44" HeightRequest="44" />
+        <ImageButton Source="delete.svg" Clicked="OnDeleteRemarkClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort gradering" ToolTipProperties.Text="Ta bort" WidthRequest="44" HeightRequest="44" />
         </VerticalStackLayout>
 
 </ContentPage>

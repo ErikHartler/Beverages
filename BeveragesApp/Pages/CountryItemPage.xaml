@@ -4,6 +4,7 @@
              x:Class="BeveragesApp.CountryItemPage">
 
     <VerticalStackLayout Spacing="5"  VerticalOptions="Center">
+            <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" HorizontalOptions="Start" />
             <Label Text="Land"
             SemanticProperties.HeadingLevel="Level1"
             Style="{StaticResource Headline}"
@@ -12,8 +13,8 @@
         <Entry x:Name="CountryNameEntry" Placeholder="Landets namn"   />
  
         <Image Source="{Binding SelectedCountry.ImageSource}"  />    
-        <Button Grid.Column="2" Text="Spara" Clicked="OnUpdateCountryClicked" CommandParameter="{Binding .}" />
-            <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteCountryClicked" CommandParameter="{Binding .}" />
+        <ImageButton Source="save.svg" Clicked="OnUpdateCountryClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Spara land" ToolTipProperties.Text="Spara" WidthRequest="44" HeightRequest="44" />
+        <ImageButton Source="delete.svg" Clicked="OnDeleteCountryClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort land" ToolTipProperties.Text="Ta bort" WidthRequest="44" HeightRequest="44" />
         </VerticalStackLayout>
 
 </ContentPage>

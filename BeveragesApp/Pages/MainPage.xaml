@@ -9,8 +9,12 @@
             SemanticProperties.HeadingLevel="Level1"
             Style="{StaticResource Headline}"
             HorizontalOptions="Center" VerticalTextAlignment="Center"/>
-            <Button Text="Drycker" Clicked="OnShowBeveragesClicked" />
-            <Button Text="Avsluta" Clicked="OnQuitClicked" />
+            <ImageButton Source="beverages.svg" Clicked="OnShowBeveragesClicked"
+                         SemanticProperties.Description="Drycker" ToolTipProperties.Text="Drycker"
+                         WidthRequest="56" HeightRequest="56" HorizontalOptions="Center" />
+            <ImageButton Source="exit.svg" Clicked="OnQuitClicked"
+                         SemanticProperties.Description="Avsluta" ToolTipProperties.Text="Avsluta"
+                         WidthRequest="56" HeightRequest="56" HorizontalOptions="Center" />
 
         </VerticalStackLayout>
     </ScrollView>

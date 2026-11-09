@@ -4,6 +4,7 @@
              x:Class="BeveragesApp.BeverageItemPage">
 
     <VerticalStackLayout VerticalOptions="Center">
+            <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" HorizontalOptions="Start" />
             <Label Text="Dryck"
             SemanticProperties.HeadingLevel="Level1" Style="{StaticResource Headline}"            
             HorizontalOptions="Center" VerticalTextAlignment="Center"/>
@@ -29,9 +30,9 @@
         </HorizontalStackLayout>
 
         <HorizontalStackLayout>
-            <Button Text="Ta foto" Clicked="OnCapturePhotoClicked" WidthRequest="140" />
-            <Button Grid.Column="2" Text="Spara" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" WidthRequest="100" />
-            <Button Grid.Column="3" Text="Ta bort" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" WidthRequest="100" />
+            <ImageButton Source="camera.svg" Clicked="OnCapturePhotoClicked" SemanticProperties.Description="Ta foto" ToolTipProperties.Text="Ta foto" WidthRequest="44" HeightRequest="44" />
+            <ImageButton Source="save.svg" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Spara dryck" ToolTipProperties.Text="Spara" WidthRequest="44" HeightRequest="44" />
+            <ImageButton Source="delete.svg" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort dryck" ToolTipProperties.Text="Ta bort" WidthRequest="44" HeightRequest="44" />
         </HorizontalStackLayout>
     </VerticalStackLayout>
 

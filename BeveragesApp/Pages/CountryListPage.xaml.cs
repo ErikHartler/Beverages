@@ -66,7 +66,7 @@ public partial class CountryListPage : ContentPage
     
     private async void OnDeleteCountryClicked(object? sender, EventArgs e)
     {
-        var selectedCountry = (sender as Button)?.CommandParameter as Country;
+        var selectedCountry = (sender as ImageButton)?.CommandParameter as Country;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedCountry!, "landet"))
         {
             
@@ -89,7 +89,7 @@ public partial class CountryListPage : ContentPage
     }
     private async void OnUpdateCountryClicked(object? sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is Country selectedCountry)
+        if (sender is ImageButton button && button.CommandParameter is Country selectedCountry)
         {
             if (string.IsNullOrEmpty(selectedCountry.Name))
             {
@@ -118,5 +118,9 @@ public partial class CountryListPage : ContentPage
         }
     }
     #endregion
+    private async void GoBack(object? sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
+    }
 
 }

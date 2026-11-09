@@ -4,12 +4,13 @@
              x:Class="BeveragesApp.RemarkListPage">
     <ScrollView>
         <VerticalStackLayout Spacing="5"  VerticalOptions="Center">
+            <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" HorizontalOptions="Start" />
             <Label Text="Graderingar"
             SemanticProperties.HeadingLevel="Level1"
             Style="{StaticResource Headline}"
             HorizontalOptions="Center" />
             <VerticalStackLayout Spacing="5">
-                <Button Text="Lägg till" Clicked="OnAddRemarkClicked" />
+                <ImageButton Source="add.svg" Clicked="OnAddRemarkClicked" SemanticProperties.Description="Lägg till gradering" ToolTipProperties.Text="Lägg till gradering" WidthRequest="44" HeightRequest="44" HorizontalOptions="Center" />
             </VerticalStackLayout>
             <CollectionView ItemsSource="{Binding Remarks}">
                 <CollectionView.ItemTemplate>
@@ -19,8 +20,8 @@
                                        x:Name="RemarkText"
                                        Text="{Binding Name}"
                                        VerticalOptions="Center" />
-                            <Button Grid.Column="1" Text="Ändra" Clicked="OnUpdateRemarkClicked" CommandParameter="{Binding .}" />
-                            <Button Grid.Column="2" Text="Ta bort" Clicked="OnDeleteRemarkClicked" CommandParameter="{Binding .}" />
+                            <ImageButton Grid.Column="1" Source="edit.svg" Clicked="OnUpdateRemarkClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ändra gradering" ToolTipProperties.Text="Ändra" WidthRequest="44" HeightRequest="44" />
+                            <ImageButton Grid.Column="2" Source="delete.svg" Clicked="OnDeleteRemarkClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort gradering" ToolTipProperties.Text="Ta bort" WidthRequest="44" HeightRequest="44" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

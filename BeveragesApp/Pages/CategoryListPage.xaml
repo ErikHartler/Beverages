@@ -4,12 +4,13 @@
              x:Class="BeveragesApp.CategoryListPage">
     <ScrollView>
         <VerticalStackLayout Spacing="5"  VerticalOptions="Center">
+            <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" HorizontalOptions="Start" />
             <Label Text="Dryckeskategorier"
             SemanticProperties.HeadingLevel="Level1"
             Style="{StaticResource Headline}"
             HorizontalOptions="Center" />
             <VerticalStackLayout Spacing="5">
-                <Button Text="Lägg till" Clicked="OnAddCategoryClicked" />
+                <ImageButton Source="add.svg" Clicked="OnAddCategoryClicked" SemanticProperties.Description="Lägg till kategori" ToolTipProperties.Text="Lägg till kategori" WidthRequest="44" HeightRequest="44" HorizontalOptions="Center" />
             </VerticalStackLayout>
             <CollectionView ItemsSource="{Binding Categories}">
                 <CollectionView.ItemTemplate>
@@ -19,8 +20,8 @@
                                        x:Name="CategoryName"
                                        Text="{Binding Name}"
                                        VerticalOptions="Center" />
-                            <Button Grid.Column="1" Text="Ändra" Clicked="OnUpdateCategoryClicked" CommandParameter="{Binding .}" />
-                            <Button Grid.Column="2" Text="Ta bort" Clicked="OnDeleteCategoryClicked" CommandParameter="{Binding .}" />
+                            <ImageButton Grid.Column="1" Source="edit.svg" Clicked="OnUpdateCategoryClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ändra kategori" ToolTipProperties.Text="Ändra" WidthRequest="44" HeightRequest="44" />
+                            <ImageButton Grid.Column="2" Source="delete.svg" Clicked="OnDeleteCategoryClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort kategori" ToolTipProperties.Text="Ta bort" WidthRequest="44" HeightRequest="44" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

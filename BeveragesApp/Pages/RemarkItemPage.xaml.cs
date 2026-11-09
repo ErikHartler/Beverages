@@ -52,7 +52,7 @@ public partial class RemarkItemPage : ContentPage
     }
     private async void OnUpdateRemarkClicked(object? sender, EventArgs e)
     {
-        if (sender is Button)
+        if (sender is ImageButton)
         {
             if (string.IsNullOrEmpty(RemarkTextEntry.Text))
             {
@@ -99,5 +99,9 @@ public partial class RemarkItemPage : ContentPage
         }
     }
     #endregion
+    private async void GoBack(object? sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
+    }
 
 }

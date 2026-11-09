@@ -50,7 +50,7 @@ public partial class CategoryItemPage : ContentPage
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
     {
-        if (sender is Button)
+        if (sender is ImageButton)
         {
             if (string.IsNullOrEmpty(CategoryNameEntry.Text))
             {
@@ -103,5 +103,9 @@ public partial class CategoryItemPage : ContentPage
         }
     }
     #endregion
+    private async void GoBack(object? sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
+    }
 
 }
