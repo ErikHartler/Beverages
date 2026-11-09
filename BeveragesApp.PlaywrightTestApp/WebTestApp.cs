@@ -53,13 +53,8 @@ public static class WebTestApp
               <div class="actions"><button class="icon-button" aria-label="Tillbaka" title="Tillbaka" onclick="showHome()"><svg viewBox="0 0 24 24"><path d="M19 12H5m0 0 7-7m-7 7 7 7"/></svg></button><button class="icon-button" aria-label="Avsluta" title="Avsluta" onclick="showExitConfirmation()"><svg viewBox="0 0 24 24"><path d="M10 4H4v16h6M14 8l4 4-4 4m4-4H9"/></svg></button></div>
               <h1>Drycker</h1>
               <div class="actions">
-                <button class="icon-button" aria-label="Lägg till dryck" title="Lägg till dryck" onclick="showForm()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+                <button class="icon-button" aria-label="Lägg till dryck" title="Lägg till dryck" onclick="openBeverage()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
               </div>
-              <form id="form" hidden onsubmit="addBeverage(event)">
-                <label for="beverage-name">Dryckens namn</label>
-                <input id="beverage-name" required>
-                <button type="submit">Spara</button>
-              </form>
               <ul id="beverage-list"></ul>
             </section>
             <section id="beverage-item" hidden>
@@ -147,10 +142,17 @@ public static class WebTestApp
             <button type="button" onclick="cancelExit()">Nej</button>
             <button type="button" onclick="confirmExit()">Ja</button>
           </dialog>
+          <dialog id="error-dialog">
+            <h2>Fel</h2>
+            <p id="error-message"></p>
+            <button type="button" onclick="closeError()">OK</button>
+          </dialog>
           <script>
             function showExitConfirmation() { document.querySelector('#exit-dialog').showModal(); }
             function cancelExit() { document.querySelector('#exit-dialog').close(); }
             function confirmExit() { document.querySelector('#exit-dialog').close(); document.querySelector('#home h1').textContent = 'Avslut bekräftat'; }
+            function showUnsavedDeleteError(message) { document.querySelector('#error-message').textContent = message; document.querySelector('#error-dialog').showModal(); }
+            function closeError() { document.querySelector('#error-dialog').close(); }
             let beverages = [{ name: 'Testdryck', category: 'Öl' }];
             let selectedBeverage = null;
             function showBeverages() { document.querySelectorAll('main > section').forEach(section => section.hidden = true); document.querySelector('#beverages').hidden = false; renderBeverages(); }
@@ -165,17 +167,22 @@ public static class WebTestApp
                 list.append(row);
               });
             }
-            function openBeverage(index) { selectedBeverage = index; document.querySelector('#beverage-item-name').value = beverages[index].name; document.querySelector('#beverages').hidden = true; document.querySelector('#beverage-item').hidden = false; }
-            function saveBeverage() { beverages[selectedBeverage].name = document.querySelector('#beverage-item-name').value.trim(); showBeverageList(); }
-            function deleteBeverage() { if (selectedBeverage !== null) beverages.splice(selectedBeverage, 1); showBeverageList(); }
-            function showForm() { document.querySelector('#form').hidden = false; document.querySelector('#beverage-name').focus(); }
-            function addBeverage(event) {
-              event.preventDefault();
-              const name = document.querySelector('#beverage-name').value.trim();
-              beverages.push({ name, category: 'Öl' });
-              renderBeverages();
-              document.querySelector('#form').reset();
-              document.querySelector('#form').hidden = true;
+            function openBeverage(index = null) {
+              selectedBeverage = index;
+              document.querySelector('#beverage-item-name').value = index === null ? '' : beverages[index].name;
+              document.querySelector('#beverages').hidden = true;
+              document.querySelector('#beverage-item').hidden = false;
+            }
+            function saveBeverage() {
+              const name = document.querySelector('#beverage-item-name').value.trim();
+              if (selectedBeverage === null) beverages.push({ name, category: 'Öl' });
+              else beverages[selectedBeverage].name = name;
+              showBeverageList();
+            }
+            function deleteBeverage() {
+              if (selectedBeverage === null) { showUnsavedDeleteError('Drycken har inte sparats och kan därför inte tas bort.'); return; }
+              beverages.splice(selectedBeverage, 1);
+              showBeverageList();
             }
             let categories = ['Öl', 'Vin'];
             let selectedCategory = null;
@@ -205,7 +212,8 @@ public static class WebTestApp
               showCategoryList();
             }
             function deleteCategory() {
-              if (selectedCategory !== null) categories.splice(selectedCategory, 1);
+              if (selectedCategory === null) { showUnsavedDeleteError('Kategorin har inte sparats och kan därför inte tas bort.'); return; }
+              categories.splice(selectedCategory, 1);
               showCategoryList();
             }
             let countries = ['Sverige', 'Norge', 'Danmark', 'Finland', 'Italien', 'Tyskland', 'Spanien', 'Sydafrika'];
@@ -235,7 +243,8 @@ public static class WebTestApp
               showCountryList();
             }
             function deleteCountry() {
-              if (selectedCountry !== null) countries.splice(selectedCountry, 1);
+              if (selectedCountry === null) { showUnsavedDeleteError('Landet har inte sparats och kan därför inte tas bort.'); return; }
+              countries.splice(selectedCountry, 1);
               showCountryList();
             }
             let remarks = [
@@ -274,7 +283,8 @@ public static class WebTestApp
               showRemarkList();
             }
             function deleteRemark() {
-              if (selectedRemark !== null) remarks.splice(selectedRemark, 1);
+              if (selectedRemark === null) { showUnsavedDeleteError('Graderingen har inte sparats och kan därför inte tas bort.'); return; }
+              remarks.splice(selectedRemark, 1);
               showRemarkList();
             }
           </script>

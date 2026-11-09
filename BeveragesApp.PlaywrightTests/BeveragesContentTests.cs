@@ -18,11 +18,14 @@ public class BeveragesContentTests : PageTest
     [ClassInitialize]
     public static async Task StartTestApp(TestContext _)
     {
+        CancellationToken cancellationToken = _.CancellationToken;
         _testApp = WebTestApp.Create();
         _testApp.Urls.Add("http://127.0.0.1:0");
-        await _testApp.StartAsync();
+        await _testApp.StartAsync(cancellationToken);
         _baseUrl = _testApp.Services.GetRequiredService<IServer>()
             .Features.Get<IServerAddressesFeature>()!.Addresses.Single();
+
+
     }
 
     [ClassCleanup]
@@ -30,8 +33,10 @@ public class BeveragesContentTests : PageTest
     {
         if (_testApp is not null)
         {
-            await _testApp.StopAsync();
+            CancellationToken cancellationToken = new();
+            await _testApp.StopAsync(cancellationToken);
             await _testApp.DisposeAsync();
+            Assert.IsTrue(cancellationToken.IsCancellationRequested);
         }
     }
 
@@ -64,8 +69,8 @@ public class BeveragesContentTests : PageTest
         await Page.GotoAsync(_baseUrl);
         await Page.GetByRole(AriaRole.Button, new() { Name = "Drycker" }).ClickAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Lägg till dryck" }).ClickAsync();
-        await Page.Locator("#form").GetByLabel("Dryckens namn").FillAsync("Playwright Ale");
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Spara" }).ClickAsync();
+        await Page.GetByLabel("Dryckens namn").FillAsync("Playwright Ale");
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Spara dryck" }).ClickAsync();
 
         await Expect(Page.GetByText("Playwright Ale")).ToBeVisibleAsync();
     }

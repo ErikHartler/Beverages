@@ -12,12 +12,17 @@
             <Label Text="Dryck"
             SemanticProperties.HeadingLevel="Level1" Style="{StaticResource Headline}"            
             HorizontalOptions="Center" VerticalTextAlignment="Center"/>
-        <HorizontalStackLayout>
-            <Entry x:Name="BeverageIdEntry" Placeholder="Dryckens ID"  IsEnabled="False"  WidthRequest="70" />
-            <Entry x:Name="BeverageNameEntry" Placeholder="Dryckens namn"   WidthRequest="70"  />
-            <Entry x:Name="BeverageDescriptionEntry" Placeholder="Dryckens beskrivning"   WidthRequest="70"  />
-            <Entry x:Name="BeveragePriceEntry" Placeholder="Dryckens pris"   WidthRequest="70" />
-        </HorizontalStackLayout>
+        <Grid ColumnDefinitions="*,2*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="6">
+            <Entry Grid.Row="0" Grid.Column="0" x:Name="BeverageIdEntry" Placeholder="Dryckens ID" IsEnabled="False" />
+            <Entry Grid.Row="1" Grid.Column="0" x:Name="BeverageNameEntry" Placeholder="Dryckens namn" />
+            <Entry Grid.Row="2" Grid.Column="0" x:Name="BeveragePriceEntry" Placeholder="Dryckens pris" />
+            <Editor Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
+                    x:Name="BeverageDescriptionEntry"
+                    Placeholder="Dryckens beskrivning"
+                    AutoSize="TextChanges"
+                    MinimumHeightRequest="120"
+                    VerticalOptions="Fill" />
+        </Grid>
         <HorizontalStackLayout>
             <Picker Title="Välj dryckeskategori" x:Name="CategoryPicker"
                     ItemDisplayBinding="{Binding Name}" WidthRequest="70" />

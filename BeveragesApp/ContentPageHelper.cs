@@ -143,6 +143,11 @@ namespace BeveragesApp
             bool confirmDelete = false;
             if (sender !=null)
             {
+                if (sender.Id == 0)
+                {
+                    await _contentPage.DisplayAlertAsync("Fel", $"{selectedItemName} {sender.Name} har inte sparats än och kan inte tas bort.", "OK");
+                    return false;
+                }
                 confirmDelete = await _contentPage.DisplayAlertAsync("Bekräfta borttagning", $"Är du säker på att du vill ta bort {selectedItemName} {sender.Name}?", "Yes", "No");
             }
             else
