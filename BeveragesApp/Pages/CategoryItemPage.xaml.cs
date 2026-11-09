@@ -35,6 +35,7 @@ public partial class CategoryItemPage : ContentPage
   
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (await _contentPageHelper.ConfirmDeleteAsync(_beverageCategory, "kategorin"))
         {
             try
@@ -50,6 +51,7 @@ public partial class CategoryItemPage : ContentPage
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton)
         {
             if (string.IsNullOrEmpty(CategoryNameEntry.Text))
@@ -103,8 +105,14 @@ public partial class CategoryItemPage : ContentPage
         }
     }
     #endregion
+    private async void OnQuitClicked(object? sender, EventArgs e)
+    {
+        await _contentPageHelper.OnQuitClickedAsync(sender, e);
+    }
+
     private async void GoBack(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
 

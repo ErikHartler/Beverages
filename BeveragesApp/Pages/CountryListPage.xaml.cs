@@ -53,6 +53,7 @@ public partial class CountryListPage : ContentPage
     
     private async void OnAddCountryClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         try
         {
             CountryItemPage page = new(_dataContext, new Country() { Name=""}, _cancellationToken);
@@ -66,6 +67,7 @@ public partial class CountryListPage : ContentPage
     
     private async void OnDeleteCountryClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         var selectedCountry = (sender as ImageButton)?.CommandParameter as Country;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedCountry!, "landet"))
         {
@@ -89,6 +91,7 @@ public partial class CountryListPage : ContentPage
     }
     private async void OnUpdateCountryClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is Country selectedCountry)
         {
             if (string.IsNullOrEmpty(selectedCountry.Name))
@@ -118,8 +121,14 @@ public partial class CountryListPage : ContentPage
         }
     }
     #endregion
+    private async void OnQuitClicked(object? sender, EventArgs e)
+    {
+        await _contentPageHelper.OnQuitClickedAsync(sender, e);
+    }
+
     private async void GoBack(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
 

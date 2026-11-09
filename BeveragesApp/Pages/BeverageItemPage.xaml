@@ -3,8 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.BeverageItemPage">
 
-    <VerticalStackLayout VerticalOptions="Center">
-            <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" HorizontalOptions="Start" />
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+    <VerticalStackLayout>
+            <HorizontalStackLayout>
+                <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" />
+            </HorizontalStackLayout>
             <Label Text="Dryck"
             SemanticProperties.HeadingLevel="Level1" Style="{StaticResource Headline}"            
             HorizontalOptions="Center" VerticalTextAlignment="Center"/>
@@ -35,5 +39,8 @@
             <ImageButton Source="delete.svg" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort dryck" ToolTipProperties.Text="Ta bort" WidthRequest="44" HeightRequest="44" />
         </HorizontalStackLayout>
     </VerticalStackLayout>
+        </ScrollView>
+        <ImageButton Grid.Row="1" Source="exit.svg" Clicked="OnQuitClicked" SemanticProperties.Description="Avsluta" ToolTipProperties.Text="Avsluta" WidthRequest="56" HeightRequest="56" HorizontalOptions="Center" Margin="0,8,0,12" />
+    </Grid>
 
 </ContentPage>

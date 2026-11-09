@@ -59,6 +59,7 @@ public partial class CategoryListPage : ContentPage
     
     private async void OnAddCategoryClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         try
         {
             CategoryItemPage page = new(_dataContext, new BeverageCategory() { Name=""}, _cancellationToken);
@@ -72,6 +73,7 @@ public partial class CategoryListPage : ContentPage
 
     private async void OnDeleteCategoryClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         var selectedCategory = (sender as ImageButton)?.CommandParameter as BeverageCategory;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedCategory!, "kategorin"))
         {
@@ -94,6 +96,7 @@ public partial class CategoryListPage : ContentPage
     }
     private async void OnUpdateCategoryClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is BeverageCategory selectedCategory)
         {
             if (string.IsNullOrEmpty(selectedCategory.Name))
@@ -123,8 +126,14 @@ public partial class CategoryListPage : ContentPage
         }
     }
     #endregion
+    private async void OnQuitClicked(object? sender, EventArgs e)
+    {
+        await _contentPageHelper.OnQuitClickedAsync(sender, e);
+    }
+
     private async void GoBack(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
 

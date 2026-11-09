@@ -72,6 +72,12 @@ namespace BeveragesApp
 #endif
         public async void OnQuitClicked(object? sender, EventArgs e)
         {
+            await OnQuitClickedAsync(sender, e);
+        }
+
+        public async Task OnQuitClickedAsync(object? sender, EventArgs e)
+        {
+            using var _ = new ButtonExecutionScope(sender);
             if (await _contentPage.DisplayAlertAsync("Avsluta", "Är du säker?", "Ja", "Nej"))
             {
                 Application.Current?.Quit();
@@ -80,6 +86,7 @@ namespace BeveragesApp
 
         public async void OnShowCountriesClicked(object? sender, EventArgs e)
         {
+            using var _ = new ButtonExecutionScope(sender);
             try
             {
                 CountryListPage page = new(_dataContext, _cancellationToken);
@@ -92,6 +99,7 @@ namespace BeveragesApp
         }
         public async void OnShowCategoriesClicked(object? sender, EventArgs e)
         {
+            using var _ = new ButtonExecutionScope(sender);
             try
             {
                 CategoryListPage page = new(_dataContext, _cancellationToken);
@@ -105,6 +113,7 @@ namespace BeveragesApp
 
         public async void OnShowBeveragesClicked(object? sender, EventArgs e)
         {
+            using var _ = new ButtonExecutionScope(sender);
             try
             {
                 BeverageListPage page = new(_dataContext, _cancellationToken);
@@ -117,6 +126,7 @@ namespace BeveragesApp
         }
         public async void OnShowRemarksClicked(object? sender, EventArgs e)
         {
+            using var _ = new ButtonExecutionScope(sender);
             try
             {
                 RemarkListPage page = new(_dataContext, _cancellationToken);

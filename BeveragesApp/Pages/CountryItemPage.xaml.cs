@@ -30,6 +30,7 @@ public partial class CountryItemPage : ContentPage
     #region private event handlers
     private async void OnDeleteCountryClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (await _contentPageHelper.ConfirmDeleteAsync(_country, "landet"))
         {
             try
@@ -46,6 +47,7 @@ public partial class CountryItemPage : ContentPage
     }
     private async void OnUpdateCountryClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton)
         {
             if (string.IsNullOrEmpty(CountryNameEntry.Text))
@@ -98,8 +100,14 @@ public partial class CountryItemPage : ContentPage
         }
     }
     #endregion
+    private async void OnQuitClicked(object? sender, EventArgs e)
+    {
+        await _contentPageHelper.OnQuitClickedAsync(sender, e);
+    }
+
     private async void GoBack(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
 

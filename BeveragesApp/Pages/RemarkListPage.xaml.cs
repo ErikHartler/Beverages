@@ -30,7 +30,7 @@ public partial class RemarkListPage : ContentPage
     #region private methods
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
-        _contentPageHelper.OnQuitClicked(sender, e);
+        await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
     private async void LoadRemarks(CancellationToken cancellationToken)
     {
@@ -57,6 +57,7 @@ public partial class RemarkListPage : ContentPage
     #region private event handlers
     private async void OnAddRemarkClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         try
         {
             RemarkItemPage page = new(_dataContext, new Remark() { Name = "", Order = 0 }, _cancellationToken);
@@ -70,6 +71,7 @@ public partial class RemarkListPage : ContentPage
     
     private async void OnDeleteRemarkClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         var selectedRemark = (sender as ImageButton)?.CommandParameter as Remark;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedRemark!, "betyget"))
         {
@@ -88,6 +90,7 @@ public partial class RemarkListPage : ContentPage
     }
     private async void OnUpdateRemarkClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is Remark selectedRemark)
         {
             if (string.IsNullOrEmpty(selectedRemark.Name))
@@ -119,6 +122,7 @@ public partial class RemarkListPage : ContentPage
     #endregion
     private async void GoBack(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
 

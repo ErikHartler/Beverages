@@ -1,6 +1,6 @@
 # BeveragesApp Playwright test app
 
-This solution includes a small browser test app that recreates the Swedish home and beverage-list content from BeveragesApp. MSTest starts the app on a free local port; Playwright checks the home content, opens the beverage list, and adds a beverage.
+This solution includes a small browser test app that recreates the Swedish home, beverage, category, country, and remark content from BeveragesApp. MSTest starts the app on a free local port; Playwright checks page content, add flows, all list/detail back-navigation buttons, and the exit confirmation on every page. Beverage, category, country, remark, back-navigation, and exit-button checks are kept in separate test classes.
 
 This is a web test harness, because BeveragesApp itself is a native .NET MAUI app and Playwright cannot automate its native controls directly.
 

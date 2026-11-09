@@ -64,7 +64,7 @@ public class BeveragesContentTests : PageTest
         await Page.GotoAsync(_baseUrl);
         await Page.GetByRole(AriaRole.Button, new() { Name = "Drycker" }).ClickAsync();
         await Page.GetByRole(AriaRole.Button, new() { Name = "Lägg till dryck" }).ClickAsync();
-        await Page.GetByLabel("Dryckens namn").FillAsync("Playwright Ale");
+        await Page.Locator("#form").GetByLabel("Dryckens namn").FillAsync("Playwright Ale");
         await Page.GetByRole(AriaRole.Button, new() { Name = "Spara" }).ClickAsync();
 
         await Expect(Page.GetByText("Playwright Ale")).ToBeVisibleAsync();

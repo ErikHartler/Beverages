@@ -33,6 +33,7 @@ public partial class RemarkItemPage : ContentPage
      
     private async void OnDeleteRemarkClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (await _contentPageHelper.ConfirmDeleteAsync(_remark, "betyget"))
         {
             try
@@ -52,6 +53,7 @@ public partial class RemarkItemPage : ContentPage
     }
     private async void OnUpdateRemarkClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton)
         {
             if (string.IsNullOrEmpty(RemarkTextEntry.Text))
@@ -99,8 +101,14 @@ public partial class RemarkItemPage : ContentPage
         }
     }
     #endregion
+    private async void OnQuitClicked(object? sender, EventArgs e)
+    {
+        await _contentPageHelper.OnQuitClickedAsync(sender, e);
+    }
+
     private async void GoBack(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
 

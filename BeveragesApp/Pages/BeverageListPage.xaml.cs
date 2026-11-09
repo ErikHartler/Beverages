@@ -57,6 +57,7 @@ public partial class BeverageListPage : ContentPage
     
     private async void OnAddBeverageClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         try
         {
 
@@ -82,6 +83,7 @@ public partial class BeverageListPage : ContentPage
     }
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         var selectedBeverage = (sender as ImageButton)?.CommandParameter as Beverage;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedBeverage!, "drycken"))
         {
@@ -100,6 +102,7 @@ public partial class BeverageListPage : ContentPage
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is Beverage selectedBeverage)
         {
             if (string.IsNullOrEmpty(selectedBeverage.Name))
@@ -132,8 +135,14 @@ public partial class BeverageListPage : ContentPage
         }
     }
     #endregion
+    private async void OnQuitClicked(object? sender, EventArgs e)
+    {
+        await _contentPageHelper.OnQuitClickedAsync(sender, e);
+    }
+
     private async void GoBack(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
 

@@ -26,7 +26,7 @@ public partial class MainPage : ContentPage
 
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
-        _contentPageHelper.OnQuitClicked(sender,e);
+        await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
 

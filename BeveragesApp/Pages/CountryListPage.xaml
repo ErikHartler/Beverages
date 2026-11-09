@@ -2,9 +2,12 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.CountryListPage">
-    <ScrollView>
-        <VerticalStackLayout Spacing="5"  VerticalOptions="Center">
-            <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" HorizontalOptions="Start" />
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+        <VerticalStackLayout Spacing="5">
+            <HorizontalStackLayout>
+                <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" />
+            </HorizontalStackLayout>
             <Label Text="Länder"
             SemanticProperties.HeadingLevel="Level1"
             Style="{StaticResource Headline}"
@@ -27,6 +30,8 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
+        <ImageButton Grid.Row="1" Source="exit.svg" Clicked="OnQuitClicked" SemanticProperties.Description="Avsluta" ToolTipProperties.Text="Avsluta" WidthRequest="56" HeightRequest="56" HorizontalOptions="Center" Margin="0,8,0,12" />
+    </Grid>
 
 </ContentPage>

@@ -50,6 +50,7 @@ public partial class BeverageItemPage : ContentPage
     #region private event handlers    
     private async void OnCapturePhotoClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         try
         {
             FileResult? photo = await MediaPicker.Default.CapturePhotoAsync();
@@ -137,6 +138,7 @@ public partial class BeverageItemPage : ContentPage
     
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (await _contentPageHelper.ConfirmDeleteAsync(_beverage, "drycken"))
         {
             try
@@ -153,6 +155,7 @@ public partial class BeverageItemPage : ContentPage
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton)
         {
             if (string.IsNullOrEmpty(BeverageNameEntry.Text))
@@ -210,8 +213,14 @@ public partial class BeverageItemPage : ContentPage
         }
     }
     #endregion
+    private async void OnQuitClicked(object? sender, EventArgs e)
+    {
+        await _contentPageHelper.OnQuitClickedAsync(sender, e);
+    }
+
     private async void GoBack(object? sender, EventArgs e)
     {
+        using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
 
