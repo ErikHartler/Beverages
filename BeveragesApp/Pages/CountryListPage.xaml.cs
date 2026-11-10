@@ -1,12 +1,15 @@
-﻿using BeveragesLib.Data;
+using BeveragesLib.Data;
 using BeveragesLib.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+
+using Microsoft.Extensions.Logging;
 
 namespace BeveragesApp;
 
 public partial class CountryListPage : ContentPage
 {
+    private readonly ILogger<CountryListPage> _logger = PageLogging.CreateLogger<CountryListPage>();
     #region private members
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
@@ -17,10 +20,12 @@ public partial class CountryListPage : ContentPage
     public CountryListPage(DataContext dataContext, CancellationToken cancellationToken)
     {
         InitializeComponent();
+        _logger.LogInformation("{PageName} opened", nameof(CountryListPage));
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
-        LoadCountries(CancellationToken.None); 
+        LoadCountries(cancellationToken);
+        _logger.LogInformation("{PageName} ended", nameof(CountryListPage));
     }
     #endregion
     #region public  properties
@@ -31,6 +36,7 @@ public partial class CountryListPage : ContentPage
 
     private async void LoadCountries(CancellationToken cancellationToken)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(LoadCountries));
         try
         {
             Countries.Clear();  
@@ -47,12 +53,14 @@ public partial class CountryListPage : ContentPage
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Operation failed on {PageName}", nameof(CountryListPage));
             await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
     
     private async void OnAddCountryClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnAddCountryClicked));
         using var _ = new ButtonExecutionScope(sender);
         try
         {
@@ -61,12 +69,14 @@ public partial class CountryListPage : ContentPage
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Operation failed on {PageName}", nameof(CountryListPage));
             await DisplayAlertAsync("Fel", $"Ett fel uppstod: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
     
     private async void OnDeleteCountryClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteCountryClicked));
         using var _ = new ButtonExecutionScope(sender);
         var selectedCountry = (sender as ImageButton)?.CommandParameter as Country;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedCountry!, "landet"))
@@ -81,6 +91,7 @@ public partial class CountryListPage : ContentPage
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Operation failed on {PageName}", nameof(CountryListPage));
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av landet: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
@@ -91,6 +102,7 @@ public partial class CountryListPage : ContentPage
     }
     private async void OnUpdateCountryClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateCountryClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is Country selectedCountry)
         {
@@ -105,13 +117,14 @@ public partial class CountryListPage : ContentPage
             try
             {
                 Country? country = await _dataContext.Countries.FirstOrDefaultAsync(
-                        c => c.Id == selectedCountry.Id, CancellationToken.None
+                        c => c.Id == selectedCountry.Id, _cancellationToken
                     ); 
                 CountryItemPage page = new(_dataContext, country! , _cancellationToken);
                 await Navigation.PushAsync(page);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Operation failed on {PageName}", nameof(CountryListPage));
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid uppdatering av landet: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
@@ -123,11 +136,13 @@ public partial class CountryListPage : ContentPage
     #endregion
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
     private async void GoBack(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }

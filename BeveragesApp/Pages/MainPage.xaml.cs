@@ -1,9 +1,11 @@
-﻿using BeveragesLib.Data;
+using BeveragesLib.Data;
+using Microsoft.Extensions.Logging;
 
 namespace BeveragesApp;
 
 public partial class MainPage : ContentPage
 {
+    private readonly ILogger<MainPage> _logger = PageLogging.CreateLogger<MainPage>();
     #region private members
     private readonly DataContext _dataContext;
     private readonly CancellationToken  _cancellationToken  = new();
@@ -14,10 +16,14 @@ public partial class MainPage : ContentPage
     #region constructor
     public MainPage(DataContext dataContext)
     {
+        CancellationToken cancellationToken = new();
         InitializeComponent();
+        _logger.LogInformation("{PageName} opened", nameof(MainPage));
+
         _dataContext = dataContext; // Assign the injected DataContext instance to the private field
-        _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
- 
+        _contentPageHelper = new ContentPageHelper(this, _dataContext, cancellationToken);
+        _logger.LogInformation("{PageName} ended", nameof(MainPage));
+
     }
     #endregion
 
@@ -26,26 +32,31 @@ public partial class MainPage : ContentPage
 
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
 
     private async void OnShowCategoriesClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnShowCategoriesClicked));
         _contentPageHelper.OnShowCategoriesClicked(sender, e);  
     }
 
     private async void OnShowBeveragesClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnShowBeveragesClicked));
         _contentPageHelper.OnShowBeveragesClicked(sender, e);
     }
 
     private async void OnShowCountriesClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnShowCountriesClicked));
         _contentPageHelper.OnShowCountriesClicked(sender, e);
     }
     private async void OnShowRemarksClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnShowRemarksClicked));
         _contentPageHelper.OnShowRemarksClicked(sender, e);
     }
     #endregion

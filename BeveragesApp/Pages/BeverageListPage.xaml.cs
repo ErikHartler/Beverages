@@ -1,12 +1,15 @@
-﻿using BeveragesLib.Data;
+using BeveragesLib.Data;
 using BeveragesLib.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+
+using Microsoft.Extensions.Logging;
 
 namespace BeveragesApp;
 
 public partial class BeverageListPage : ContentPage
 {
+    private readonly ILogger<BeverageListPage> _logger = PageLogging.CreateLogger<BeverageListPage>();
     #region private members
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
@@ -16,10 +19,12 @@ public partial class BeverageListPage : ContentPage
     public BeverageListPage(DataContext dataContext, CancellationToken cancellationToken)
     {
         InitializeComponent();
+        _logger.LogInformation("{PageName} opened", nameof(BeverageListPage));
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         LoadBeveragesAsync(_cancellationToken);
-        _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);        
+        _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
+        _logger.LogInformation("{PageName} ended", nameof(BeverageListPage));
     }
     #endregion
     #region public properties
@@ -29,7 +34,9 @@ public partial class BeverageListPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        LoadBeveragesAsync(CancellationToken.None);
+        _logger.LogDebug("{PageName} appeared", GetType().Name);
+        LoadBeveragesAsync(_cancellationToken);
+        _logger.LogDebug("{PageName} appeared ended", GetType().Name);
     }
 
     #endregion
@@ -51,12 +58,14 @@ public partial class BeverageListPage : ContentPage
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageListPage));
             await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }  
     
     private async void OnAddBeverageClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnAddBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         try
         {
@@ -78,11 +87,13 @@ public partial class BeverageListPage : ContentPage
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageListPage));
             await DisplayAlertAsync("Fel", $"Ett fel uppstod: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         var selectedBeverage = (sender as ImageButton)?.CommandParameter as Beverage;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedBeverage!, "drycken"))
@@ -92,16 +103,18 @@ public partial class BeverageListPage : ContentPage
             {
                 _dataContext.Beverages.Remove(selectedBeverage!); // Remove the selected drink from the DbSet
                 await _dataContext.SaveChangesAsync(); // Save changes to the database
-                LoadBeveragesAsync(CancellationToken.None); // Refresh the list of drinks after deletion
+                LoadBeveragesAsync(_cancellationToken); // Refresh the list of drinks after deletion
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageListPage));
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av drycken: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is Beverage selectedBeverage)
         {
@@ -120,12 +133,13 @@ public partial class BeverageListPage : ContentPage
                     .Include(b => b.CountryOfOrigin)
                     .Include(b => b.ReviewRemark)
                     .FirstOrDefaultAsync(
-                        b => b.Id == selectedBeverage.Id, CancellationToken.None);
+                        b => b.Id == selectedBeverage.Id, _cancellationToken);
                 BeverageItemPage page = new(_dataContext, beverage!, _cancellationToken);
                 await Navigation.PushAsync(page);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageListPage));
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid uppdatering av drycken: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
@@ -137,11 +151,13 @@ public partial class BeverageListPage : ContentPage
     #endregion
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
     private async void GoBack(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }

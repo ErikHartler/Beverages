@@ -28,7 +28,7 @@
 		<MauiXamlInflator>SourceGen</MauiXamlInflator>
 
 		<!-- Display name -->
-		<ApplicationTitle>BeveragesApp</ApplicationTitle>
+		<ApplicationTitle>Beverages</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.erikhartlerab.beveragesapp</ApplicationId>

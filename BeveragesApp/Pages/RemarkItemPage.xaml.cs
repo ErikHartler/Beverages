@@ -1,11 +1,14 @@
-﻿using BeveragesLib.Data;
+using BeveragesLib.Data;
 using BeveragesLib.Models;
 using Microsoft.EntityFrameworkCore;
+
+using Microsoft.Extensions.Logging;
 
 namespace BeveragesApp;
 
 public partial class RemarkItemPage : ContentPage
 {
+    private readonly ILogger<RemarkItemPage> _logger = PageLogging.CreateLogger<RemarkItemPage>();
     #region private members
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
@@ -17,6 +20,7 @@ public partial class RemarkItemPage : ContentPage
     public RemarkItemPage(DataContext dataContext, Remark remark, CancellationToken cancellationToken)
     {
         InitializeComponent();
+        _logger.LogInformation("{PageName} opened", nameof(RemarkItemPage));
         _dataContext = dataContext; // Assign the injected DataContext instance to the private field
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
@@ -25,6 +29,7 @@ public partial class RemarkItemPage : ContentPage
         RemarkOrderEntry.Text= _remark.Order.ToString();
         RemarkTextEntry.Text = _remark.Name;
         RemarkIdEntry.Text = _remark.Id.ToString();
+        _logger.LogInformation("{PageName} ended", nameof(RemarkItemPage));
     }
     #endregion
 
@@ -33,6 +38,7 @@ public partial class RemarkItemPage : ContentPage
      
     private async void OnDeleteRemarkClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteRemarkClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (await _contentPageHelper.ConfirmDeleteAsync(_remark, "betyget"))
         {
@@ -43,6 +49,7 @@ public partial class RemarkItemPage : ContentPage
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Operation failed on {PageName}", nameof(RemarkItemPage));
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av betyget: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
@@ -53,6 +60,7 @@ public partial class RemarkItemPage : ContentPage
     }
     private async void OnUpdateRemarkClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateRemarkClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton)
         {
@@ -92,6 +100,7 @@ public partial class RemarkItemPage : ContentPage
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Operation failed on {PageName}", nameof(RemarkItemPage));
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid uppdatering av betyget: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
@@ -103,11 +112,13 @@ public partial class RemarkItemPage : ContentPage
     #endregion
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
     private async void GoBack(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }

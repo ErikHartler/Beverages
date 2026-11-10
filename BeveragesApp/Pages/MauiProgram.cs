@@ -23,17 +23,20 @@ public static class MauiProgram
                 string dbPath = Path.Combine(FileSystem.AppDataDirectory, "beverages.db");
                 //File.Delete(dbPath); // Delete the existing database file to ensure a fresh start
                 options.UseSqlite($"Data Source={dbPath}");
-            }); 
-#if DEBUG
+            });
+        //#if DEBUG
         builder.Logging.SetMinimumLevel(LogLevel.Debug);
         builder.Logging.AddDebug();
-#endif
+        builder.Logging.AddProvider(new BeveragesApp.FileLoggerProvider(
+            Path.Combine(FileSystem.AppDataDirectory, "logs", "beverages-app.log")));
+        //#endif
         MauiApp app = builder.Build();
+        BeveragesApp.PageLogging.Initialize(app.Services.GetRequiredService<ILoggerFactory>());
         using (IServiceScope scope = app.Services.CreateScope())
         {
             DataContext dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
             dbContext.Database.EnsureCreated(); // Ensure the database is created when the application starts
-            bool anySeeding = false;
+            bool anySeeding = false;          
             if (!dbContext.BeverageCategories.Any())
             {
                 // Add initial data if the database is empty

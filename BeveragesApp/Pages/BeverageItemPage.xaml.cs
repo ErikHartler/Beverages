@@ -1,12 +1,15 @@
-﻿using BeveragesLib.Data;
+using BeveragesLib.Data;
 using BeveragesLib.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+
+using Microsoft.Extensions.Logging;
 
 namespace BeveragesApp;
 
 public partial class BeverageItemPage : ContentPage
 {
+    private readonly ILogger<BeverageItemPage> _logger = PageLogging.CreateLogger<BeverageItemPage>();
     #region private members
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
@@ -20,6 +23,7 @@ public partial class BeverageItemPage : ContentPage
     public BeverageItemPage(DataContext dataContext, Beverage beverage, CancellationToken cancellationToken)
     {
         InitializeComponent();
+        _logger.LogInformation("{PageName} opened", nameof(BeverageItemPage));
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         _beverage = beverage;
@@ -32,6 +36,7 @@ public partial class BeverageItemPage : ContentPage
         {
             CapturedPhotoImage.Source = ImageSource.FromStream(() => new MemoryStream(imageBytes));
         }
+        _logger.LogInformation("{PageName} constructor ended", nameof(BeverageItemPage));
     }
     #endregion
     #region public properties
@@ -42,6 +47,7 @@ public partial class BeverageItemPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        _logger.LogDebug("{PageName} appeared", GetType().Name);
         await LoadCategoriesAsync(_cancellationToken);
         await LoadCountriesAsync(_cancellationToken);
         await LoadRemarksAsync(_cancellationToken);
@@ -50,6 +56,7 @@ public partial class BeverageItemPage : ContentPage
     #region private event handlers    
     private async void OnCapturePhotoClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnCapturePhotoClicked));
         using var _ = new ButtonExecutionScope(sender);
         try
         {
@@ -77,12 +84,14 @@ public partial class BeverageItemPage : ContentPage
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageItemPage));
             await DisplayAlertAsync("Fel", $"Ett fel uppstod vid fotografering: {ex.Message}", "OK");
         }
     }
 
     private async Task LoadRemarksAsync(CancellationToken cancellationToken)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(LoadRemarksAsync));
         try
         {
             await _dataContext.Database.EnsureCreatedAsync(cancellationToken);
@@ -99,11 +108,13 @@ public partial class BeverageItemPage : ContentPage
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageItemPage));
             await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
     private async Task LoadCountriesAsync(CancellationToken cancellationToken)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(LoadCountriesAsync));
         try
         {
             await _dataContext.Database.EnsureCreatedAsync(cancellationToken);
@@ -120,11 +131,13 @@ public partial class BeverageItemPage : ContentPage
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageItemPage));
             await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
     private async Task LoadCategoriesAsync(CancellationToken cancellationToken)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(LoadCategoriesAsync));
         try
         {
             await _dataContext.Database.EnsureCreatedAsync(cancellationToken);
@@ -141,12 +154,14 @@ public partial class BeverageItemPage : ContentPage
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageItemPage));
             await DisplayAlertAsync("Fel", $"Ett fel uppstod i laddningen: {ex}", "OK"); // Display an error message if an exception occurs
         }
     }
     
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (await _contentPageHelper.ConfirmDeleteAsync(_beverage, "drycken"))
         {
@@ -158,12 +173,14 @@ public partial class BeverageItemPage : ContentPage
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageItemPage));
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid borttagning av drycken: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton)
         {
@@ -214,6 +231,7 @@ public partial class BeverageItemPage : ContentPage
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Operation failed on {PageName}", nameof(BeverageItemPage));
                 await DisplayAlertAsync("Fel", $"Ett fel uppstod vid uppdatering av drycken: {ex}", "OK"); // Display an error message if an exception occurs
             }
         }
@@ -225,11 +243,13 @@ public partial class BeverageItemPage : ContentPage
     #endregion
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
     private async void GoBack(object? sender, EventArgs e)
     {
+        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
