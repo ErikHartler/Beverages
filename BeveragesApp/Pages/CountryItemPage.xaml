@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.CountryItemPage">
@@ -7,7 +7,7 @@
         <ScrollView Grid.Row="0">
     <VerticalStackLayout Spacing="5">
             <HorizontalStackLayout>
-                <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" />
+                <ImageButton Source="back.png" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" />
             </HorizontalStackLayout>
             <Label Text="Land"
             SemanticProperties.HeadingLevel="Level1"
@@ -17,11 +17,11 @@
         <Entry x:Name="CountryNameEntry" Placeholder="Landets namn"   />
  
         <Image Source="{Binding SelectedCountry.ImageSource}"  />    
-        <ImageButton Source="save.svg" Clicked="OnUpdateCountryClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Spara land" ToolTipProperties.Text="Spara" WidthRequest="44" HeightRequest="44" />
-        <ImageButton Source="delete.svg" Clicked="OnDeleteCountryClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort land" ToolTipProperties.Text="Ta bort" WidthRequest="44" HeightRequest="44" />
+        <ImageButton Source="save.png" Clicked="OnUpdateCountryClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Spara land" ToolTipProperties.Text="Spara"  />
+        <ImageButton Source="delete.png" Clicked="OnDeleteCountryClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort land" ToolTipProperties.Text="Ta bort"/>
         </VerticalStackLayout>
         </ScrollView>
-        <ImageButton Grid.Row="1" Source="exit.svg" Clicked="OnQuitClicked" SemanticProperties.Description="Avsluta" ToolTipProperties.Text="Avsluta" WidthRequest="56" HeightRequest="56" HorizontalOptions="Center" Margin="0,8,0,12" />
+        <ImageButton Grid.Row="1" Source="exit.png" Clicked="OnQuitClicked" SemanticProperties.Description="Avsluta" ToolTipProperties.Text="Avsluta" WidthRequest="56" HeightRequest="56" HorizontalOptions="Center" Margin="0,8,0,12" />
     </Grid>
 
 </ContentPage>

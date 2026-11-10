@@ -65,6 +65,15 @@ public partial class BeverageItemPage : ContentPage
             byte[] imageBytes = memoryStream.ToArray();
             _beverage.PhotoImage = imageBytes;
             CapturedPhotoImage.Source = ImageSource.FromStream(() => new MemoryStream(imageBytes));
+
+            if (string.IsNullOrWhiteSpace(BeverageDescriptionEntry.Text))
+            {
+                string? description = await GoogleLensHelper.TryDescribePhotoAsync(imageBytes);
+                if (!string.IsNullOrWhiteSpace(description))
+                {
+                    BeverageDescriptionEntry.Text = description.Trim();
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -171,6 +180,7 @@ public partial class BeverageItemPage : ContentPage
                 int id = 0; ;
                 if (!string.IsNullOrEmpty(BeverageIdEntry.Text)) id = int.Parse(BeverageIdEntry.Text.Trim());
                 _beverage.Name = BeverageNameEntry.Text.Trim();
+                _beverage.Description = BeverageDescriptionEntry.Text?.Trim() ?? string.Empty;
                 _beverage.Category = CategoryPicker.SelectedItem as BeverageCategory
                     ?? throw new InvalidOperationException("Select a beverage category.");
                 _beverage.CountryOfOrigin = CountryPicker.SelectedItem as Country
@@ -223,5 +233,7 @@ public partial class BeverageItemPage : ContentPage
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
+
+  
 
 }

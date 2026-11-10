@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.CategoryItemPage">
@@ -7,7 +7,7 @@
         <ScrollView Grid.Row="0">
     <VerticalStackLayout Spacing="5">
             <HorizontalStackLayout>
-                <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" />
+                <ImageButton Source="back.png" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" />
             </HorizontalStackLayout>
             <Label Text="Dryckeskategori"
             SemanticProperties.HeadingLevel="Level1"
@@ -17,11 +17,11 @@
         <Entry x:Name="CategoryNameEntry" Placeholder="Kategorins namn"   />
  
         <Image Source="{Binding SelectedCategory.ImageSource}"  />    
-        <ImageButton Source="save.svg" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Spara kategori" ToolTipProperties.Text="Spara" WidthRequest="44" HeightRequest="44" />
-        <ImageButton Source="delete.svg" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort kategori" ToolTipProperties.Text="Ta bort" WidthRequest="44" HeightRequest="44" />
+        <ImageButton Source="save.png" Clicked="OnUpdateBeverageClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Spara kategori" ToolTipProperties.Text="Spara" />
+        <ImageButton Source="delete.png" Clicked="OnDeleteBeverageClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort kategori" ToolTipProperties.Text="Ta bort" />
         </VerticalStackLayout>
         </ScrollView>
-        <ImageButton Grid.Row="1" Source="exit.svg" Clicked="OnQuitClicked" SemanticProperties.Description="Avsluta" ToolTipProperties.Text="Avsluta" WidthRequest="56" HeightRequest="56" HorizontalOptions="Center" Margin="0,8,0,12" />
+        <ImageButton Grid.Row="1" Source="exit.png" Clicked="OnQuitClicked" SemanticProperties.Description="Avsluta" ToolTipProperties.Text="Avsluta" HorizontalOptions="Center" Margin="0,8,0,12" />
     </Grid>
 
 </ContentPage>

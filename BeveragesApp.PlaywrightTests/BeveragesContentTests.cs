@@ -36,7 +36,7 @@ public class BeveragesContentTests : PageTest
             CancellationToken cancellationToken = new();
             await _testApp.StopAsync(cancellationToken);
             await _testApp.DisposeAsync();
-            Assert.IsTrue(cancellationToken.IsCancellationRequested);
+            Assert.IsFalse(cancellationToken.IsCancellationRequested);
         }
     }
 

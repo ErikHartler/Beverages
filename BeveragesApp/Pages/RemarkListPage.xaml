@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BeveragesApp.RemarkListPage">
@@ -6,14 +6,14 @@
         <ScrollView Grid.Row="0">
         <VerticalStackLayout Spacing="5">
             <HorizontalStackLayout>
-                <ImageButton Source="back.svg" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka" WidthRequest="44" HeightRequest="44" />
+                <ImageButton Source="back.png" Clicked="GoBack" SemanticProperties.Description="Tillbaka" ToolTipProperties.Text="Tillbaka"  />
             </HorizontalStackLayout>
             <Label Text="Graderingar"
             SemanticProperties.HeadingLevel="Level1"
             Style="{StaticResource Headline}"
             HorizontalOptions="Center" />
             <VerticalStackLayout Spacing="5">
-                <ImageButton Source="add.svg" Clicked="OnAddRemarkClicked" SemanticProperties.Description="Lägg till gradering" ToolTipProperties.Text="Lägg till gradering" WidthRequest="44" HeightRequest="44" HorizontalOptions="Center" />
+                <ImageButton Source="add.png" Clicked="OnAddRemarkClicked" SemanticProperties.Description="Lägg till gradering" ToolTipProperties.Text="Lägg till gradering"  HorizontalOptions="Center" />
             </VerticalStackLayout>
             <CollectionView ItemsSource="{Binding Remarks}">
                 <CollectionView.ItemTemplate>
@@ -23,15 +23,15 @@
                                        x:Name="RemarkText"
                                        Text="{Binding Name}"
                                        VerticalOptions="Center" />
-                            <ImageButton Grid.Column="1" Source="edit.svg" Clicked="OnUpdateRemarkClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ändra gradering" ToolTipProperties.Text="Ändra" WidthRequest="44" HeightRequest="44" />
-                            <ImageButton Grid.Column="2" Source="delete.svg" Clicked="OnDeleteRemarkClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort gradering" ToolTipProperties.Text="Ta bort" WidthRequest="44" HeightRequest="44" />
+                            <ImageButton Grid.Column="1" Source="edit.png" Clicked="OnUpdateRemarkClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ändra gradering" ToolTipProperties.Text="Ändra" />
+                            <ImageButton Grid.Column="2" Source="delete.png" Clicked="OnDeleteRemarkClicked" CommandParameter="{Binding .}" SemanticProperties.Description="Ta bort gradering" ToolTipProperties.Text="Ta bort"  />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </VerticalStackLayout>
         </ScrollView>
-        <ImageButton Grid.Row="1" Source="exit.svg" Clicked="OnQuitClicked" SemanticProperties.Description="Avsluta" ToolTipProperties.Text="Avsluta" WidthRequest="56" HeightRequest="56" HorizontalOptions="Center" Margin="0,8,0,12" />
+        <ImageButton Grid.Row="1" Source="exit.png" Clicked="OnQuitClicked" SemanticProperties.Description="Avsluta" ToolTipProperties.Text="Avsluta" WidthRequest="56" HeightRequest="56" HorizontalOptions="Center" Margin="0,8,0,12" />
     </Grid>
 
 </ContentPage>
