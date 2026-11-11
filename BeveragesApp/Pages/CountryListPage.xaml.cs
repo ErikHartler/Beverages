@@ -4,13 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 
 using Microsoft.Extensions.Logging;
+using BeveragesApp.Helpers;
 
 namespace BeveragesApp;
 
 public partial class CountryListPage : ContentPage
 {
-    private readonly ILogger<CountryListPage> _logger = PageLogging.CreateLogger<CountryListPage>();
+
     #region private members
+    private static readonly ILogger<CountryListPage> _logger = PageLogging.CreateLogger<CountryListPage>();
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
@@ -20,12 +22,12 @@ public partial class CountryListPage : ContentPage
     public CountryListPage(DataContext dataContext, CancellationToken cancellationToken)
     {
         InitializeComponent();
-        _logger.LogInformation("{PageName} opened", nameof(CountryListPage));
+        if (_logger.IsEnabled(LogLevel.Information))    _logger.LogInformation("{PageName} opened", nameof(CountryListPage));
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
         LoadCountries(cancellationToken);
-        _logger.LogInformation("{PageName} ended", nameof(CountryListPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} ended", nameof(CountryListPage));
     }
     #endregion
     #region public  properties
@@ -36,7 +38,7 @@ public partial class CountryListPage : ContentPage
 
     private async void LoadCountries(CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(LoadCountries));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(LoadCountries));
         try
         {
             Countries.Clear();  
@@ -60,7 +62,7 @@ public partial class CountryListPage : ContentPage
     
     private async void OnAddCountryClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnAddCountryClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnAddCountryClicked));
         using var _ = new ButtonExecutionScope(sender);
         try
         {
@@ -76,7 +78,7 @@ public partial class CountryListPage : ContentPage
     
     private async void OnDeleteCountryClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteCountryClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnDeleteCountryClicked));
         using var _ = new ButtonExecutionScope(sender);
         var selectedCountry = (sender as ImageButton)?.CommandParameter as Country;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedCountry!, "landet"))
@@ -102,7 +104,7 @@ public partial class CountryListPage : ContentPage
     }
     private async void OnUpdateCountryClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateCountryClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnUpdateCountryClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is Country selectedCountry)
         {
@@ -136,13 +138,13 @@ public partial class CountryListPage : ContentPage
     #endregion
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
     private async void GoBack(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }

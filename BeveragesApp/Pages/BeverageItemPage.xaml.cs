@@ -1,3 +1,4 @@
+using BeveragesApp.Helpers;
 using BeveragesLib.Data;
 using BeveragesLib.Models;
 using Microsoft.Data.Sqlite;
@@ -9,8 +10,10 @@ namespace BeveragesApp;
 
 public partial class BeverageItemPage : ContentPage
 {
-    private readonly ILogger<BeverageItemPage> _logger = PageLogging.CreateLogger<BeverageItemPage>();
+
+
     #region private members
+    private static readonly ILogger<BeverageItemPage> _logger = PageLogging.CreateLogger<BeverageItemPage>();
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
@@ -23,7 +26,7 @@ public partial class BeverageItemPage : ContentPage
     public BeverageItemPage(DataContext dataContext, Beverage beverage, CancellationToken cancellationToken)
     {
         InitializeComponent();
-        _logger.LogInformation("{PageName} opened", nameof(BeverageItemPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} opened", nameof(BeverageItemPage));
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         _beverage = beverage;
@@ -36,7 +39,7 @@ public partial class BeverageItemPage : ContentPage
         {
             CapturedPhotoImage.Source = ImageSource.FromStream(() => new MemoryStream(imageBytes));
         }
-        _logger.LogInformation("{PageName} constructor ended", nameof(BeverageItemPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} constructor ended", nameof(BeverageItemPage));
     }
     #endregion
     #region public properties
@@ -47,7 +50,7 @@ public partial class BeverageItemPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        _logger.LogDebug("{PageName} appeared", GetType().Name);
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} appeared", GetType().Name);
         await LoadCategoriesAsync(_cancellationToken);
         await LoadCountriesAsync(_cancellationToken);
         await LoadRemarksAsync(_cancellationToken);
@@ -56,7 +59,7 @@ public partial class BeverageItemPage : ContentPage
     #region private event handlers    
     private async void OnCapturePhotoClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnCapturePhotoClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnCapturePhotoClicked));
         using var _ = new ButtonExecutionScope(sender);
         try
         {
@@ -91,7 +94,7 @@ public partial class BeverageItemPage : ContentPage
 
     private async Task LoadRemarksAsync(CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(LoadRemarksAsync));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(LoadRemarksAsync));
         try
         {
             await _dataContext.Database.EnsureCreatedAsync(cancellationToken);
@@ -114,7 +117,7 @@ public partial class BeverageItemPage : ContentPage
     }
     private async Task LoadCountriesAsync(CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(LoadCountriesAsync));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(LoadCountriesAsync));
         try
         {
             await _dataContext.Database.EnsureCreatedAsync(cancellationToken);
@@ -137,7 +140,7 @@ public partial class BeverageItemPage : ContentPage
     }
     private async Task LoadCategoriesAsync(CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(LoadCategoriesAsync));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(LoadCategoriesAsync));
         try
         {
             await _dataContext.Database.EnsureCreatedAsync(cancellationToken);
@@ -161,7 +164,7 @@ public partial class BeverageItemPage : ContentPage
     
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteBeverageClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnDeleteBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (await _contentPageHelper.ConfirmDeleteAsync(_beverage, "drycken"))
         {
@@ -180,7 +183,7 @@ public partial class BeverageItemPage : ContentPage
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateBeverageClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnUpdateBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton)
         {
@@ -243,13 +246,13 @@ public partial class BeverageItemPage : ContentPage
     #endregion
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
     private async void GoBack(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }

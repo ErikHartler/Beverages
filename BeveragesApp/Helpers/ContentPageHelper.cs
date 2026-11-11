@@ -1,15 +1,19 @@
-﻿
-using BeveragesLib.Data;
+﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
+using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
-namespace BeveragesApp
+namespace BeveragesApp.Helpers
 {
     public class ContentPageHelper
     {
+        #region private members
         private readonly ContentPage _contentPage;
         private readonly DataContext _dataContext;
         private readonly CancellationToken _cancellationToken;
+        #endregion
 
+        #region public constructors
         public ContentPageHelper(ContentPage contentPage, DataContext dataContext, CancellationToken cancellationToken)
         {
             _contentPage = contentPage;
@@ -27,6 +31,7 @@ namespace BeveragesApp
 #endif
             _contentPage.BindingContext = contentPage;
         }
+        #endregion
 
 #if ANDROID
         public void AddAndroidMenuItem(string text, EventHandler handler)
@@ -70,6 +75,7 @@ namespace BeveragesApp
             return item;
         }
 #endif
+        #region public event handlers
         public async void OnQuitClicked(object? sender, EventArgs e)
         {
             await OnQuitClickedAsync(sender, e);
@@ -157,7 +163,7 @@ namespace BeveragesApp
 
             return confirmDelete;   
         }
-         
+        #endregion
 
     }
 }

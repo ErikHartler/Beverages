@@ -1,4 +1,4 @@
-namespace BeveragesApp;
+namespace BeveragesApp.Helpers;
 
 /// <summary>
 /// Temporarily disables the clicked control and restores its previous state when
@@ -23,9 +23,6 @@ internal sealed class ButtonExecutionScope : IDisposable
 
     public void Dispose()
     {
-        if (_control is not null)
-        {
-            _control.IsEnabled = _wasEnabled;
-        }
+        _control?.IsEnabled = _wasEnabled;
     }
 }

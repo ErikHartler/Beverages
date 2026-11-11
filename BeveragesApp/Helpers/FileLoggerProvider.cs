@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 
-namespace BeveragesApp;
+namespace BeveragesApp.Helpers;
 
 internal   sealed class FileLoggerProvider : ILoggerProvider
 {

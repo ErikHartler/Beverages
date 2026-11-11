@@ -4,13 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 
 using Microsoft.Extensions.Logging;
+using BeveragesApp.Helpers;
 
 namespace BeveragesApp;
 
 public partial class CategoryListPage : ContentPage
 {
-    private readonly ILogger<CategoryListPage> _logger = PageLogging.CreateLogger<CategoryListPage>();
+
     #region private members
+    private static readonly ILogger<CategoryListPage> _logger = PageLogging.CreateLogger<CategoryListPage>();
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
@@ -20,11 +22,11 @@ public partial class CategoryListPage : ContentPage
     public CategoryListPage(DataContext dataContext, CancellationToken cancellationToken)
     {
         InitializeComponent();
-        _logger.LogInformation("{PageName} opened", nameof(CategoryListPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} opened", nameof(CategoryListPage));
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
-        _logger.LogInformation("{PageName} ended", nameof(CategoryListPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} ended", nameof(CategoryListPage));
     }
     #endregion
     #region public  properties
@@ -34,7 +36,7 @@ public partial class CategoryListPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        _logger.LogDebug("{PageName} appeared", GetType().Name);
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} appeared", GetType().Name);
         LoadCategoriesAsync(_cancellationToken);
     }
 
@@ -43,14 +45,11 @@ public partial class CategoryListPage : ContentPage
     #region private event handlers
     private async void LoadCategoriesAsync(CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(LoadCategoriesAsync));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(LoadCategoriesAsync));
         try
         {
             Categories.Clear();  
-
             await _dataContext.Database.EnsureCreatedAsync(cancellationToken); // Ensure the database is created before querying
-
-
             List<BeverageCategory> beverageCategories = await AsyncEnumerable.ToListAsync(_dataContext.BeverageCategories.AsAsyncEnumerable(), cancellationToken); // Asynchronously retrieve the list of drinks from the database
             foreach (BeverageCategory? category in beverageCategories)
             {
@@ -67,7 +66,7 @@ public partial class CategoryListPage : ContentPage
     
     private async void OnAddCategoryClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnAddCategoryClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnAddCategoryClicked));
         using var _ = new ButtonExecutionScope(sender);
         try
         {
@@ -83,7 +82,7 @@ public partial class CategoryListPage : ContentPage
 
     private async void OnDeleteCategoryClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteCategoryClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnDeleteCategoryClicked));
         using var _ = new ButtonExecutionScope(sender);
         var selectedCategory = (sender as ImageButton)?.CommandParameter as BeverageCategory;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedCategory!, "kategorin"))
@@ -108,7 +107,7 @@ public partial class CategoryListPage : ContentPage
     }
     private async void OnUpdateCategoryClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateCategoryClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnUpdateCategoryClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is BeverageCategory selectedCategory)
         {
@@ -142,13 +141,13 @@ public partial class CategoryListPage : ContentPage
     #endregion
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
     private async void GoBack(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }

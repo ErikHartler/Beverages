@@ -103,6 +103,9 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
+		<PackageReference Include="Xamarin.Google.MLKit.Common" Version="118.11.0.9" />
+		<PackageReference Include="Xamarin.Google.MLKit.GenAI.Common" Version="1.0.0.4-beta2" />
+		<PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.9.0" />
 		<AndroidMavenLibrary Include="com.google.mlkit:genai-image-description" Version="1.0.0-beta1" Repository="Google" VerifyDependencies="false" />
 	</ItemGroup>
 

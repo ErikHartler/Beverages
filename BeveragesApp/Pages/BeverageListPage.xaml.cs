@@ -4,13 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 
 using Microsoft.Extensions.Logging;
+using BeveragesApp.Helpers;
 
 namespace BeveragesApp;
 
 public partial class BeverageListPage : ContentPage
 {
-    private readonly ILogger<BeverageListPage> _logger = PageLogging.CreateLogger<BeverageListPage>();
+
     #region private members
+    private static readonly ILogger<BeverageListPage> _logger = PageLogging.CreateLogger<BeverageListPage>();
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
@@ -19,12 +21,12 @@ public partial class BeverageListPage : ContentPage
     public BeverageListPage(DataContext dataContext, CancellationToken cancellationToken)
     {
         InitializeComponent();
-        _logger.LogInformation("{PageName} opened", nameof(BeverageListPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} opened", nameof(BeverageListPage));
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         LoadBeveragesAsync(_cancellationToken);
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
-        _logger.LogInformation("{PageName} ended", nameof(BeverageListPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} ended", nameof(BeverageListPage));
     }
     #endregion
     #region public properties
@@ -34,9 +36,9 @@ public partial class BeverageListPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        _logger.LogDebug("{PageName} appeared", GetType().Name);
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} appeared", GetType().Name);
         LoadBeveragesAsync(_cancellationToken);
-        _logger.LogDebug("{PageName} appeared ended", GetType().Name);
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} appeared ended", GetType().Name);
     }
 
     #endregion
@@ -65,7 +67,7 @@ public partial class BeverageListPage : ContentPage
     
     private async void OnAddBeverageClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnAddBeverageClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnAddBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         try
         {
@@ -93,7 +95,7 @@ public partial class BeverageListPage : ContentPage
     }
     private async void OnDeleteBeverageClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteBeverageClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnDeleteBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         var selectedBeverage = (sender as ImageButton)?.CommandParameter as Beverage;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedBeverage!, "drycken"))
@@ -114,7 +116,7 @@ public partial class BeverageListPage : ContentPage
     }
     private async void OnUpdateBeverageClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateBeverageClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnUpdateBeverageClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is Beverage selectedBeverage)
         {
@@ -151,13 +153,13 @@ public partial class BeverageListPage : ContentPage
     #endregion
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
     private async void GoBack(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }

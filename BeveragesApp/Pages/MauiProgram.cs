@@ -1,5 +1,6 @@
 ﻿using BeveragesLib.Data;
 using BeveragesLib.Models;
+using BeveragesApp.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -27,15 +28,23 @@ public static class MauiProgram
         //#if DEBUG
         builder.Logging.SetMinimumLevel(LogLevel.Debug);
         builder.Logging.AddDebug();
-        builder.Logging.AddProvider(new BeveragesApp.FileLoggerProvider(
+        builder.Logging.AddProvider(new FileLoggerProvider(
             Path.Combine(FileSystem.AppDataDirectory, "logs", "beverages-app.log")));
         //#endif
         MauiApp app = builder.Build();
-        BeveragesApp.PageLogging.Initialize(app.Services.GetRequiredService<ILoggerFactory>());
+
+
+        PageLogging.Initialize(app.Services.GetRequiredService<ILoggerFactory>());
         using (IServiceScope scope = app.Services.CreateScope())
         {
             DataContext dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
             dbContext.Database.EnsureCreated(); // Ensure the database is created when the application starts
+            // EnsureCreated does not add tables to an existing database. Repair this lookup table
+            // in place so databases created by earlier app versions can still start safely.
+            dbContext.Database.ExecuteSqlRaw(
+                "CREATE TABLE IF NOT EXISTS \"BeverageCategory\" (\"Id\" INTEGER NOT NULL CONSTRAINT \"PK_BeverageCategory\" PRIMARY KEY AUTOINCREMENT, \"Name\" TEXT NOT NULL)");
+            dbContext.Database.ExecuteSqlRaw(
+                "CREATE UNIQUE INDEX IF NOT EXISTS \"IX_BeverageCategory_Name\" ON \"BeverageCategory\" (\"Name\")");
             bool anySeeding = false;          
             if (!dbContext.BeverageCategories.Any())
             {

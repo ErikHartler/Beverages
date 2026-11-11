@@ -1,3 +1,4 @@
+using BeveragesApp.Helpers;
 using BeveragesLib.Data;
 using BeveragesLib.Models;
 using Microsoft.EntityFrameworkCore;
@@ -8,8 +9,9 @@ namespace BeveragesApp;
 
 public partial class RemarkItemPage : ContentPage
 {
-    private readonly ILogger<RemarkItemPage> _logger = PageLogging.CreateLogger<RemarkItemPage>();
+
     #region private members
+    private readonly ILogger<RemarkItemPage> _logger = PageLogging.CreateLogger<RemarkItemPage>();
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
@@ -20,7 +22,7 @@ public partial class RemarkItemPage : ContentPage
     public RemarkItemPage(DataContext dataContext, Remark remark, CancellationToken cancellationToken)
     {
         InitializeComponent();
-        _logger.LogInformation("{PageName} opened", nameof(RemarkItemPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} opened", nameof(RemarkItemPage));
         _dataContext = dataContext; // Assign the injected DataContext instance to the private field
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
@@ -29,7 +31,7 @@ public partial class RemarkItemPage : ContentPage
         RemarkOrderEntry.Text= _remark.Order.ToString();
         RemarkTextEntry.Text = _remark.Name;
         RemarkIdEntry.Text = _remark.Id.ToString();
-        _logger.LogInformation("{PageName} ended", nameof(RemarkItemPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} ended", nameof(RemarkItemPage));
     }
     #endregion
 
@@ -38,7 +40,7 @@ public partial class RemarkItemPage : ContentPage
      
     private async void OnDeleteRemarkClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteRemarkClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnDeleteRemarkClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (await _contentPageHelper.ConfirmDeleteAsync(_remark, "betyget"))
         {
@@ -60,7 +62,7 @@ public partial class RemarkItemPage : ContentPage
     }
     private async void OnUpdateRemarkClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateRemarkClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnUpdateRemarkClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton)
         {
@@ -112,13 +114,13 @@ public partial class RemarkItemPage : ContentPage
     #endregion
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
 
     private async void GoBack(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }

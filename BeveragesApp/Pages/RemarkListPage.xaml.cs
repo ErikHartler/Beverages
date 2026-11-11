@@ -4,13 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 
 using Microsoft.Extensions.Logging;
+using BeveragesApp.Helpers;
 
 namespace BeveragesApp;
 
 public partial class RemarkListPage : ContentPage
 {
-    private readonly ILogger<RemarkListPage> _logger = PageLogging.CreateLogger<RemarkListPage>();
+
     #region private members
+    private static readonly ILogger<RemarkListPage> _logger = PageLogging.CreateLogger<RemarkListPage>();
     private readonly DataContext _dataContext;
     private readonly CancellationToken _cancellationToken;
     private readonly ContentPageHelper _contentPageHelper;
@@ -20,12 +22,12 @@ public partial class RemarkListPage : ContentPage
     public RemarkListPage(DataContext dataContext, CancellationToken cancellationToken)
     {
         InitializeComponent();
-        _logger.LogInformation("{PageName} opened", nameof(RemarkListPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} opened", nameof(RemarkListPage));
         _dataContext = dataContext;
         _cancellationToken = cancellationToken;
         _contentPageHelper = new ContentPageHelper(this, _dataContext, _cancellationToken);
         LoadRemarks(_cancellationToken);
-        _logger.LogInformation("{PageName} ended", nameof(RemarkListPage));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("{PageName} ended", nameof(RemarkListPage));
     }
     #endregion
     #region public  properties
@@ -35,12 +37,12 @@ public partial class RemarkListPage : ContentPage
     #region private methods
     private async void OnQuitClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnQuitClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnQuitClicked));
         await _contentPageHelper.OnQuitClickedAsync(sender, e);
     }
     private async void LoadRemarks(CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(LoadRemarks));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(LoadRemarks));
         try
         {
             Remarks.Clear();  
@@ -65,7 +67,7 @@ public partial class RemarkListPage : ContentPage
     #region private event handlers
     private async void OnAddRemarkClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnAddRemarkClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnAddRemarkClicked));
         using var _ = new ButtonExecutionScope(sender);
         try
         {
@@ -81,7 +83,7 @@ public partial class RemarkListPage : ContentPage
     
     private async void OnDeleteRemarkClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnDeleteRemarkClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnDeleteRemarkClicked));
         using var _ = new ButtonExecutionScope(sender);
         var selectedRemark = (sender as ImageButton)?.CommandParameter as Remark;
         if (await _contentPageHelper.ConfirmDeleteAsync(selectedRemark!, "betyget"))
@@ -102,7 +104,7 @@ public partial class RemarkListPage : ContentPage
     }
     private async void OnUpdateRemarkClicked(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(OnUpdateRemarkClicked));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(OnUpdateRemarkClicked));
         using var _ = new ButtonExecutionScope(sender);
         if (sender is ImageButton button && button.CommandParameter is Remark selectedRemark)
         {
@@ -136,7 +138,7 @@ public partial class RemarkListPage : ContentPage
     #endregion
     private async void GoBack(object? sender, EventArgs e)
     {
-        _logger.LogDebug("Executing {PageAction}", nameof(GoBack));
+        if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Executing {PageAction}", nameof(GoBack));
         using var _ = new ButtonExecutionScope(sender);
         await Navigation.PopAsync();
     }
