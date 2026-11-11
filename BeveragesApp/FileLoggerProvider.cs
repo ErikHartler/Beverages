@@ -3,17 +3,17 @@ using Microsoft.Extensions.Logging;
 
 namespace BeveragesApp;
 
-internal sealed class FileLoggerProvider : ILoggerProvider
+internal   sealed class FileLoggerProvider : ILoggerProvider
 {
     private readonly string _logFilePath;
     private readonly ConcurrentDictionary<string, FileLogger> _loggers = new();
-    private readonly object _writeLock = new();
+    private readonly Lock _writeLock = new();
     private bool _disposed;
 
     public FileLoggerProvider(string logFilePath)
     {
         _logFilePath = logFilePath;
-        Directory.CreateDirectory(Path.GetDirectoryName(logFilePath)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(logFilePath)!); 
     }
 
     public ILogger CreateLogger(string categoryName) =>

@@ -8,7 +8,6 @@ public partial class MainPage : ContentPage
     private readonly ILogger<MainPage> _logger = PageLogging.CreateLogger<MainPage>();
     #region private members
     private readonly DataContext _dataContext;
-    private readonly CancellationToken  _cancellationToken  = new();
     private readonly ContentPageHelper _contentPageHelper;
     #endregion
 
